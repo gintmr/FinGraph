@@ -57,7 +57,7 @@ type DropTarget = {
   top: number;
 };
 
-const storageKey = "fingraph-dashboard-panels-v2";
+const storageKey = "fingraph-dashboard-panels-v3";
 const dashboardColumns: DashboardColumnId[] = ["left", "center", "right"];
 const dropPreviewHeight = 68;
 const dropSwitchDeadZone = 18;
@@ -69,9 +69,9 @@ const columnLabels: Record<DashboardColumnId, string> = {
 };
 
 const defaultColumns: ColumnPanels = {
-  left: ["market_overview", "impact_matrix", "trend", "inflation_components", "fed_watch", "economic_calendar"],
+  left: ["market_overview", "impact_matrix", "trend", "inflation_components", "fed_watch", "economic_calendar", "yield_curve"],
   center: ["daily_summary", "news", "financial_graph", "layer_health", "asset_heatmap", "export"],
-  right: ["cftc_positioning", "yield_curve", "risk_gauge", "global_hotspots", "sector_radar", "ai_theme", "earnings_calendar", "risk"]
+  right: ["cftc_positioning", "risk_gauge", "global_hotspots", "sector_radar", "ai_theme", "earnings_calendar", "risk"]
 };
 
 const toneStyles: Record<
@@ -92,6 +92,10 @@ const toneStyles: Record<
 
 function findDefaultColumn(panelId: string): DashboardColumnId {
   return dashboardColumns.find((column) => defaultColumns[column].includes(panelId)) ?? "right";
+}
+
+function defaultToneForPanel(panelId: string): PanelTone {
+  return findDefaultColumn(panelId) === "center" ? "red" : "slate";
 }
 
 function normalizeColumns(input: Partial<Record<DashboardColumnId, string[]>> | undefined, panels: PanelDefinition[]): ColumnPanels {
@@ -123,7 +127,7 @@ function defaultPanelPreferences(panels: PanelDefinition[]): PanelPreferences {
   return {
     columns: normalizeColumns(defaultColumns, panels),
     collapsed: {},
-    tones: Object.fromEntries(panels.map((panel) => [panel.id, panel.tone])) as Record<string, PanelTone>
+    tones: Object.fromEntries(panels.map((panel) => [panel.id, defaultToneForPanel(panel.id)])) as Record<string, PanelTone>
   };
 }
 

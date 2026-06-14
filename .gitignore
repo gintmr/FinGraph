@@ -9,3 +9,5 @@ coverage
 *.log
 *.tsbuildinfo
 .fingraph-live-cache.json
+env.local
+.history/

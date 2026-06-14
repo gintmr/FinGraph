@@ -10,6 +10,10 @@ const nonBlockingSources = new Set(["stooq", "gdelt", "brave_search"]);
 const vercelCronUserAgent = "vercel-cron/1.0";
 
 function isAllowedCronRequest(request: NextRequest) {
+  if (isVercelCronRequest(request)) {
+    return true;
+  }
+
   const secret = process.env.CRON_SECRET;
   if (!secret) {
     return true;

@@ -4,7 +4,12 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "FinGraph",
-  description: "Personal macro-financial intelligence dashboard and Skill Pack exporter."
+  description: "Personal macro-financial intelligence dashboard and Skill Pack exporter.",
+  icons: {
+    icon: [{ url: "/fingraph-icon.svg", type: "image/svg+xml" }],
+    shortcut: ["/fingraph-icon.svg"],
+    apple: [{ url: "/fingraph-icon.svg" }]
+  }
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

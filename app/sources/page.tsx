@@ -57,35 +57,51 @@ export default async function SourcesPage() {
           <CardHeader title="数据源注册表" subtitle="只有“已接入”和“需配置 Key”的来源有采集器；“待接入”仅是候选数据源，不会生成当前事件。" />
           <CardBody>
             <div className="overflow-x-auto thin-scrollbar">
-              <table className="w-full min-w-[1220px] border-separate border-spacing-y-2 text-left text-sm">
+              <table className="w-full min-w-[1560px] table-fixed border-separate border-spacing-y-2 text-left text-sm">
+                <colgroup>
+                  <col className="w-[260px]" />
+                  <col className="w-[150px]" />
+                  <col className="w-[130px]" />
+                  <col className="w-[110px]" />
+                  <col className="w-[230px]" />
+                  <col className="w-[310px]" />
+                  <col className="w-[110px]" />
+                  <col />
+                </colgroup>
                 <thead className="text-xs text-muted">
                   <tr>
-                    <th className="px-3 py-2">来源</th>
-                    <th className="px-3 py-2">采集状态</th>
-                    <th className="px-3 py-2">类型</th>
-                    <th className="px-3 py-2">可靠性</th>
-                    <th className="px-3 py-2">环境变量</th>
-                    <th className="px-3 py-2">层级</th>
-                    <th className="px-3 py-2">文档</th>
+                    <th className="whitespace-nowrap px-3 py-2">来源</th>
+                    <th className="whitespace-nowrap px-3 py-2">采集状态</th>
+                    <th className="whitespace-nowrap px-3 py-2">类型</th>
+                    <th className="whitespace-nowrap px-3 py-2">可靠性</th>
+                    <th className="whitespace-nowrap px-3 py-2">环境变量</th>
+                    <th className="whitespace-nowrap px-3 py-2">层级</th>
+                    <th className="whitespace-nowrap px-3 py-2">文档</th>
                     <th className="px-3 py-2">说明</th>
                   </tr>
                 </thead>
                 <tbody>
                   {sources.map((source) => (
                     <tr key={source.id} className="rounded-lg bg-panel2">
-                      <td className="rounded-l-lg px-3 py-3 font-medium text-text">{source.name}</td>
-                      <td className="px-3 py-3">
+                      <td className="rounded-l-lg px-3 py-3 font-medium text-text">
+                        <span className="block truncate" title={source.name}>{source.name}</span>
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-3">
                         <Badge variant={connectorStatusVariant(source.connector_status)}>
                           {connectorStatusLabel(source.connector_status)}
                         </Badge>
                       </td>
-                      <td className="px-3 py-3 text-muted">{sourceTypeLabel(source.type)}</td>
-                      <td className="px-3 py-3">
+                      <td className="whitespace-nowrap px-3 py-3 text-muted">{sourceTypeLabel(source.type)}</td>
+                      <td className="whitespace-nowrap px-3 py-3">
                         <Badge variant={source.reliability === "very_high" ? "green" : source.reliability === "low" ? "red" : "amber"}>
                           {reliabilityLabel(source.reliability)}
                         </Badge>
                       </td>
-                      <td className="px-3 py-3 text-muted">{source.api_key_env ?? (source.api_key_required ? "需要" : "不需要")}</td>
+                      <td className="whitespace-nowrap px-3 py-3 text-muted">
+                        <span className="block truncate" title={source.api_key_env ?? (source.api_key_required ? "需要" : "不需要")}>
+                          {source.api_key_env ?? (source.api_key_required ? "需要" : "不需要")}
+                        </span>
+                      </td>
                       <td className="px-3 py-3">
                         <div className="flex flex-wrap gap-1.5">
                           {source.layers.map((layer) => (
