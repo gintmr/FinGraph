@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fingraph.local/schemas/event.schema.json",
+  "title": "FinGraphEvent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "time",
+    "title",
+    "url",
+    "source_type",
+    "related_layers",
+    "related_nodes",
+    "description",
+    "direction",
+    "strength",
+    "horizon",
+    "assets",
+    "confidence"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Stable internal event id."
+    },
+    "time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Single event timestamp. Prefer source publication time; otherwise use collection time."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Original clickable source URL."
+    },
+    "source_type": {
+      "type": "string",
+      "enum": [
+        "official_api",
+        "official_rss",
+        "public_database",
+        "company_filing",
+        "market_data",
+        "search_result",
+        "user_link"
+      ]
+    },
+    "related_layers": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": [
+          "currency",
+          "central_bank",
+          "fiscal",
+          "industry",
+          "corporate",
+          "geopolitical",
+          "social",
+          "market"
+        ]
+      }
+    },
+    "related_nodes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Concise explanation of what happened and why it matters."
+    },
+    "direction": {
+      "type": "string",
+      "enum": [
+        "positive",
+        "negative",
+        "neutral",
+        "mixed",
+        "uncertain"
+      ]
+    },
+    "strength": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "horizon": {
+      "type": "string",
+      "enum": [
+        "short",
+        "medium",
+        "long",
+        "structural"
+      ]
+    },
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    }
+  }
+}
+
