@@ -43,7 +43,7 @@ export default async function ExportsPage() {
                   "sources.csv：数据源与可靠性注册表",
                   "relation_map.json：机器可读图谱节点和边",
                   "manifest.json：导出元数据和文件清单",
-                  "TXT 模式：把以上内容合并成一个可直接复制/上传给 AI 的单文件"
+                  "TXT 模式：把以上内容合并成一个可直接下载、复制或上传给 AI 的单文件"
                 ].map((item) => (
                   <div key={item} className="rounded-lg border border-line bg-panel2 p-3">
                     {item}

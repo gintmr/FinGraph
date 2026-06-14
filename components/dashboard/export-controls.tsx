@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Download, FileArchive, FileText } from "lucide-react";
+import { Check, ClipboardCopy, Download, FileArchive, FileText } from "lucide-react";
 import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
 import { cn } from "@/lib/utils/cn";
@@ -35,11 +35,34 @@ function OptionButton({
 export function ExportControls({ days = 14, compact = false }: { days?: number; compact?: boolean }) {
   const [format, setFormat] = useState<ExportFormat>("zip");
   const [language, setLanguage] = useState<PromptLanguage>("zh");
+  const [copyState, setCopyState] = useState<"idle" | "copying" | "copied" | "error">("idle");
 
   const href = useMemo(
     () => `/api/export/skill-pack?days=${days}&format=${format}&prompt=${language}`,
     [days, format, language]
   );
+
+  async function copyTxtToClipboard() {
+    if (format !== "txt") {
+      return;
+    }
+
+    setCopyState("copying");
+    try {
+      const response = await fetch(href, { cache: "no-store" });
+      if (!response.ok) {
+        throw new Error("Failed to build TXT export.");
+      }
+
+      const text = await response.text();
+      await navigator.clipboard.writeText(text);
+      setCopyState("copied");
+      window.setTimeout(() => setCopyState("idle"), 2200);
+    } catch {
+      setCopyState("error");
+      window.setTimeout(() => setCopyState("idle"), 3000);
+    }
+  }
 
   return (
     <div className="space-y-4">
@@ -82,6 +105,24 @@ export function ExportControls({ days = 14, compact = false }: { days?: number; 
         <Download className="h-4 w-4" aria-hidden />
         导出 {format.toUpperCase()} · {language === "zh" ? "中文 Prompt" : "English Prompt"}
       </Link>
+
+      {format === "txt" ? (
+        <button
+          type="button"
+          onClick={copyTxtToClipboard}
+          disabled={copyState === "copying"}
+          className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg border border-line bg-panel2 px-4 text-sm font-semibold text-text transition hover:border-blue/35 hover:bg-blue/10 disabled:cursor-wait disabled:opacity-70"
+        >
+          {copyState === "copied" ? <Check className="h-4 w-4 text-green" aria-hidden /> : <ClipboardCopy className="h-4 w-4" aria-hidden />}
+          {copyState === "copying"
+            ? "正在生成并复制..."
+            : copyState === "copied"
+              ? "已复制到剪切板"
+              : copyState === "error"
+                ? "复制失败，请改用导出 TXT"
+                : "复制 TXT 到剪切板"}
+        </button>
+      ) : null}
     </div>
   );
 }
