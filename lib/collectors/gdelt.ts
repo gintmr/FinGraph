@@ -15,7 +15,10 @@ export async function collectGdelt(): Promise<CollectorResult> {
 
   try {
     const url = new URL("https://api.gdeltproject.org/api/v2/doc/doc");
-    url.searchParams.set("query", "(Federal Reserve OR inflation OR oil OR semiconductor OR sanctions)");
+    url.searchParams.set(
+      "query",
+      "(war OR military OR conflict OR sanctions OR airstrike OR missile OR \"Red Sea\" OR \"Taiwan Strait\" OR \"South China Sea\" OR \"shipping disruption\" OR \"export controls\" OR \"energy security\")"
+    );
     url.searchParams.set("mode", "ArtList");
     url.searchParams.set("format", "json");
     url.searchParams.set("maxrecords", "8");
@@ -33,9 +36,9 @@ export async function collectGdelt(): Promise<CollectorResult> {
           url: article.url as string,
           source_type: "public_database",
           related_layers: ["geopolitical", "industry", "market"],
-          related_nodes: ["news cluster", "risk premium", "supply-chain signal"],
+          related_nodes: ["conflict monitor", "sanctions channel", "shipping route", "risk premium"],
           description:
-            "GDELT 发现的全球报道链接，应作为风险雷达和交叉验证入口。若该主题同时被官方公告、公司披露或多个可靠媒体确认，才应提高结论强度。",
+            "GDELT 发现的地缘/冲突/制裁/航运相关报道链接，应作为风险雷达和交叉验证入口。若该主题同时被官方公告、公司披露或多个可靠媒体确认，才应提高结论强度。",
           direction: "uncertain",
           strength: index < 2 ? 3 : 2,
           horizon: "short",

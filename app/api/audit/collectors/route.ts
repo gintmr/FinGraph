@@ -11,7 +11,7 @@ type AuditIssue = {
   message: string;
 };
 
-const nonBlockingAuditSources = new Set(["stooq", "gdelt", "brave_search"]);
+const nonBlockingAuditSources = new Set(["stooq", "gdelt", "gdacs", "brave_search"]);
 
 function isAllowedAuditRequest(request: NextRequest) {
   if (process.env.NODE_ENV !== "production" && request.nextUrl.searchParams.get("local") === "1") {
@@ -93,7 +93,7 @@ function buildSourceIssues(
     issues.push({ severity: "warning", message: "Average confidence is below 0.5; treat this source as discovery only." });
   }
 
-  if (source?.type === "search_result" || source?.id === "gdelt") {
+  if (source?.type === "search_result" || source?.id === "gdelt" || source?.id === "gdacs") {
     issues.push({
       severity: "info",
       message: "Discovery source. Use links for monitoring, then cross-check important claims with official sources."

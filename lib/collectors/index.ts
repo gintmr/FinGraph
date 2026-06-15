@@ -7,6 +7,7 @@ import { collectCftcCot } from "@/lib/collectors/cftc";
 import { collectEia } from "@/lib/collectors/eia";
 import { collectFederalReserve } from "@/lib/collectors/federal-reserve";
 import { collectFred } from "@/lib/collectors/fred";
+import { collectGdacs } from "@/lib/collectors/gdacs";
 import { collectGdelt } from "@/lib/collectors/gdelt";
 import { collectSecFilings } from "@/lib/collectors/sec";
 import { collectStooqMarketData } from "@/lib/collectors/stooq";
@@ -24,6 +25,7 @@ const collectors = [
   collectCftcCot,
   collectSecFilings,
   collectGdelt,
+  collectGdacs,
   collectFred,
   collectEia,
   collectAlphaVantage,

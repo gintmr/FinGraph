@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -489,13 +490,8 @@ function sourceVariant(sourceType: FinGraphEvent["source_type"]): "blue" | "ambe
 
 export function GlobalHotspotsPanel({ events = [] }: { events?: FinGraphEvent[] }) {
   const hotspotEvents = events
-    .filter(
-      (event) =>
-        event.related_layers.includes("geopolitical") ||
-        event.related_layers.includes("industry") ||
-        event.source_type === "public_database" ||
-        event.source_type === "search_result"
-    )
+    .filter(isGeopoliticalHotspot)
+    .sort((a, b) => b.strength - a.strength || b.confidence - a.confidence || Date.parse(b.time) - Date.parse(a.time))
     .slice(0, 5);
 
   return (
@@ -503,7 +499,7 @@ export function GlobalHotspotsPanel({ events = [] }: { events?: FinGraphEvent[] 
       <CardHeader title="地缘热点事件源" subtitle="不画示意地图，只展示 GDELT、能源与供应链相关的可点击来源。" />
       <CardBody>
         {!hotspotEvents.length ? (
-          <EmptyRealData message="暂无真实热点事件。GDELT 可能被临时限流；后续也可以接入 Guardian Open Platform 或其他免费新闻源作为补充。" />
+          <EmptyRealData message="暂无真实地缘热点事件。运行采集任务后，GDELT 的冲突/制裁/航运报道和 GDACS 的人道冲击告警会显示在这里；不会用公司披露或普通产业新闻凑数。" />
         ) : null}
         <div className="space-y-3">
           {hotspotEvents.map((item) => (
@@ -535,10 +531,20 @@ export function GlobalHotspotsPanel({ events = [] }: { events?: FinGraphEvent[] 
             </div>
           ))}
         </div>
-        <PanelFooter source="GDELT" updated="2026-06-14" href="https://www.gdeltproject.org/data.html" />
+        <PanelFooter source="GDELT / GDACS" updated={new Date().toISOString().slice(0, 10)} href="https://www.gdeltproject.org/data.html" />
       </CardBody>
     </Card>
   );
+}
+
+function isGeopoliticalHotspot(event: FinGraphEvent) {
+  const text = `${event.id} ${event.title} ${event.description} ${event.related_nodes.join(" ")} ${event.assets.join(" ")}`.toLowerCase();
+  const explicitGeo = event.related_layers.includes("geopolitical");
+  const knownGeoSource = event.id.startsWith("gdelt_") || event.id.startsWith("gdacs_");
+  const geoTerms =
+    /war|conflict|military|missile|airstrike|sanction|export control|red sea|taiwan strait|south china sea|shipping|humanitarian|disaster|drought|flood|earthquake|wildfire|cyclone|geopolitical|地缘|制裁|冲突|战争|航运|人道|灾害|能源安全/.test(text);
+
+  return explicitGeo && (knownGeoSource || geoTerms);
 }
 
 export function SectorRadarPanel({ events }: { events: FinGraphEvent[] }) {
@@ -626,15 +632,7 @@ export function FiscalSocialPanel({ events, indicators }: { events: FinGraphEven
 }
 
 export function ChartLinksPanel({ indicators }: { indicators: MarketIndicator[] }) {
-  const marketSymbols = [
-    { label: "SPY", href: "https://www.tradingview.com/chart/?symbol=AMEX:SPY", note: "美股大盘风险偏好" },
-    { label: "QQQ", href: "https://www.tradingview.com/chart/?symbol=NASDAQ:QQQ", note: "科技成长与 AI 叙事" },
-    { label: "TLT", href: "https://www.tradingview.com/chart/?symbol=NASDAQ:TLT", note: "长端利率与期限溢价" },
-    { label: "GLD", href: "https://www.tradingview.com/chart/?symbol=AMEX:GLD", note: "黄金、实际利率与避险" },
-    { label: "USO", href: "https://www.tradingview.com/chart/?symbol=AMEX:USO", note: "原油与能源风险" },
-    { label: "DXY", href: "https://www.tradingview.com/chart/?symbol=TVC:DXY", note: "美元流动性与汇率压力" },
-    { label: "US10Y", href: "https://www.tradingview.com/chart/?symbol=TVC:US10Y", note: "10Y 美债收益率" }
-  ];
+  const marketSymbols = tradingViewSymbols;
   const dataLinks = [
     { label: "FRED", href: "https://fred.stlouisfed.org/", note: "利率、美元、信用利差、就业和宏观序列" },
     { label: "BEA NIPA", href: "https://apps.bea.gov/iTable/?ReqID=19&step=2&isuri=1&categories=survey", note: "GDP、消费、投资、政府支出" },
@@ -646,15 +644,47 @@ export function ChartLinksPanel({ indicators }: { indicators: MarketIndicator[] 
     .filter((indicator) => indicator.url.includes("tradingview.com"))
     .slice(0, 4)
     .map((indicator) => ({ label: indicator.name.replace(/^(Alpha Vantage|Twelve Data)\s+/, ""), href: indicator.url, note: indicator.note }));
+  const [activeSymbol, setActiveSymbol] = useState(marketSymbols[0]);
 
   return (
     <Card>
       <CardHeader title="TradingView 图表入口" subtitle="把真实市场代理指标、宏观数据源和 TradingView 图表集中放在一个可点击面板里。" />
       <CardBody>
-        <div className="grid gap-2 sm:grid-cols-2">
-          {[...liveChartLinks, ...marketSymbols].slice(0, 9).map((item) => (
+        <div className="overflow-hidden rounded-lg border border-line bg-panel2/70">
+          <div className="flex flex-wrap items-center gap-2 border-b border-line p-2">
+            {marketSymbols.map((item) => (
+              <button
+                key={item.symbol}
+                type="button"
+                onClick={() => setActiveSymbol(item)}
+                className={`rounded-md border px-2.5 py-1.5 text-xs font-semibold transition ${
+                  activeSymbol.symbol === item.symbol
+                    ? "border-blue/40 bg-blue/15 text-blue"
+                    : "border-line bg-panel text-muted hover:text-text"
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
             <a
-              key={`${item.label}-${item.href}`}
+              href={activeSymbol.href}
+              target="_blank"
+              rel="noreferrer"
+              className="ml-auto rounded-md border border-blue/30 bg-blue/10 px-2.5 py-1.5 text-xs font-semibold text-blue transition hover:bg-blue/15"
+            >
+              打开大图
+            </a>
+          </div>
+          <TradingViewChart symbol={activeSymbol.symbol} />
+          <div className="border-t border-line px-3 py-2 text-xs leading-5 text-muted">
+            {activeSymbol.note}
+          </div>
+        </div>
+
+        <div className="mt-4 grid gap-2 sm:grid-cols-2">
+          {liveChartLinks.map((item, index) => (
+            <a
+              key={`${item.label}-${item.href}-${index}`}
               href={item.href}
               target="_blank"
               rel="noreferrer"
@@ -678,5 +708,46 @@ export function ChartLinksPanel({ indicators }: { indicators: MarketIndicator[] 
         </div>
       </CardBody>
     </Card>
+  );
+}
+
+const tradingViewSymbols = [
+  { label: "SPY", symbol: "AMEX:SPY", href: "https://www.tradingview.com/chart/?symbol=AMEX:SPY", note: "美股大盘风险偏好" },
+  { label: "QQQ", symbol: "NASDAQ:QQQ", href: "https://www.tradingview.com/chart/?symbol=NASDAQ:QQQ", note: "科技成长与 AI 叙事" },
+  { label: "TLT", symbol: "NASDAQ:TLT", href: "https://www.tradingview.com/chart/?symbol=NASDAQ:TLT", note: "长端利率与期限溢价" },
+  { label: "GLD", symbol: "AMEX:GLD", href: "https://www.tradingview.com/chart/?symbol=AMEX:GLD", note: "黄金、实际利率与避险" },
+  { label: "USO", symbol: "AMEX:USO", href: "https://www.tradingview.com/chart/?symbol=AMEX:USO", note: "原油与能源风险" },
+  { label: "DXY", symbol: "TVC:DXY", href: "https://www.tradingview.com/chart/?symbol=TVC:DXY", note: "美元流动性与汇率压力" },
+  { label: "US10Y", symbol: "TVC:US10Y", href: "https://www.tradingview.com/chart/?symbol=TVC:US10Y", note: "10Y 美债收益率" }
+];
+
+function TradingViewChart({ symbol }: { symbol: string }) {
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
+
+  useEffect(() => {
+    const updateTheme = () => setTheme(document.documentElement.dataset.theme === "light" ? "light" : "dark");
+    updateTheme();
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  const src = `https://s.tradingview.com/widgetembed/?symbol=${encodeURIComponent(symbol)}&interval=D&hidesidetoolbar=1&symboledit=1&saveimage=0&toolbarbg=F1F3F6&studies=[]&theme=${theme}&style=1&timezone=America%2FNew_York&withdateranges=1&hideideas=1&locale=zh_CN`;
+
+  return (
+    <div className="h-[360px] w-full bg-panel">
+      <iframe
+        key={`${symbol}-${theme}`}
+        title={`TradingView ${symbol}`}
+        src={src}
+        className="h-full w-full border-0"
+        loading="lazy"
+        referrerPolicy="origin"
+        allowFullScreen
+      />
+    </div>
   );
 }

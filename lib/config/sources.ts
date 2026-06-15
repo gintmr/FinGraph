@@ -104,6 +104,20 @@ export const sourceRegistry: SourceDefinition[] = [
     notes: "Global event and news monitoring useful for geopolitical and cross-border risk discovery."
   },
   {
+    id: "gdacs",
+    name: "GDACS Disaster Alerts",
+    type: "public_database",
+    reliability: "high",
+    docs_url: "https://www.gdacs.org/",
+    base_url: "https://www.gdacs.org/xml/rss.xml",
+    api_key_required: false,
+    connector_status: "implemented",
+    layers: ["geopolitical", "social", "industry", "market"],
+    cadence: "realtime",
+    collector_notes: "已接入 GDACS 官方 RSS，无 key，输出全球灾害、人道冲击和供应链风险事件。",
+    notes: "Near real-time disaster alerts with potential humanitarian impact. Useful as a geopolitical and supply-chain risk monitor."
+  },
+  {
     id: "world_bank",
     name: "World Bank Indicators",
     type: "official_api",
@@ -204,6 +218,21 @@ export const sourceRegistry: SourceDefinition[] = [
     cadence: "daily",
     collector_notes: "已写采集器；未配置 BRAVE_SEARCH_API_KEY 时会跳过。搜索结果只作为发现与交叉验证。",
     notes: "Search-discovered reporting links. Use for discovery and cross-checking, not as sole evidence."
+  },
+  {
+    id: "reliefweb",
+    name: "ReliefWeb API",
+    type: "public_database",
+    reliability: "high",
+    docs_url: "https://apidoc.reliefweb.int/",
+    base_url: "https://api.reliefweb.int/v2",
+    api_key_required: true,
+    api_key_env: "RELIEFWEB_APP_NAME",
+    connector_status: "planned",
+    layers: ["geopolitical", "social", "industry"],
+    cadence: "daily",
+    collector_notes: "候选来源；ReliefWeb 免费但要求预先批准 appname，配置后可接入人道危机、冲突和灾害报告。",
+    notes: "UN-OCHA ReliefWeb reports and disaster data. Since late 2025 it requires a pre-approved appname for API access."
   }
 ];
 
