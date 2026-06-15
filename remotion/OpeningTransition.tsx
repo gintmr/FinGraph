@@ -270,11 +270,12 @@ const MarketVariablesScene = () => {
 
   return (
     <AbsoluteFill style={{ opacity }}>
-      <SectionTitle top={120} eyebrow="Not random news" title="这些变量最终都在影响美股定价" />
-      <div style={{ position: "absolute", left: center.x - 92, top: center.y - 92, width: 184, height: 184, borderRadius: 92, background: colors.panel2, border: `2px solid rgba(255,255,255,0.28)`, display: "grid", placeItems: "center", boxShadow: "0 0 90px rgba(79,143,247,0.28)" }}>
+      <SectionTitle top={124} eyebrow="Not random news" title="这些变量最终都在影响美股定价" />
+      <div style={{ position: "absolute", left: center.x - 100, top: center.y - 100, width: 200, height: 200, borderRadius: 28, background: "linear-gradient(180deg, rgba(17,32,45,0.92), rgba(7,15,23,0.96))", border: `1px solid ${colors.lineStrong}`, display: "grid", placeItems: "center", boxShadow: "0 0 110px rgba(63,151,255,0.20), inset 0 1px 0 rgba(255,255,255,0.05)" }}>
         <div style={{ textAlign: "center" }}>
-          <div style={{ fontSize: 56, fontWeight: 900 }}>美股</div>
-          <div style={{ marginTop: 6, fontFamily: sansFont, color: colors.muted, fontSize: 20 }}>pricing core</div>
+          <FinGraphGlyph />
+          <div style={{ marginTop: 12, fontSize: 42, fontWeight: 900 }}>美股</div>
+          <div style={{ marginTop: 5, fontFamily: sansFont, color: colors.muted, fontSize: 17 }}>pricing core</div>
         </div>
       </div>
       {concepts.map((concept, index) => {
@@ -290,15 +291,16 @@ const MarketVariablesScene = () => {
               style={{
                 position: "absolute",
                 left: x - 82,
-                top: y - 36,
+                top: y - 34,
                 width: 164,
-                height: 72,
-                borderRadius: 18,
+                height: 68,
+                borderRadius: 14,
                 border: `1px solid ${colors.line}`,
-                background: colors.panel2,
+                background: "rgba(8,17,25,0.84)",
+                boxShadow: "0 16px 52px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.035)",
                 display: "grid",
                 placeItems: "center",
-                fontSize: 26,
+                fontSize: 24,
                 fontWeight: 700,
                 opacity: itemIn,
                 transform: `scale(${0.86 + itemIn * 0.14})`
@@ -320,13 +322,13 @@ const BeginnerConfusionScene = () => {
 
   return (
     <AbsoluteFill style={{ opacity }}>
-      <SectionTitle top={118} eyebrow="The real pain point" title="小白不是只缺答案，而是缺提问框架" />
-      <div style={{ position: "absolute", left: 142, top: 320, width: 660, height: 430, borderRadius: 30, background: colors.panel, border: `1px solid ${colors.line}`, padding: 36 }}>
-        <div style={{ fontSize: 34, fontWeight: 800 }}>AI 能回答很多问题</div>
-        <div style={{ marginTop: 18, fontSize: 28, lineHeight: 1.55, color: colors.muted }}>
+      <SectionTitle top={122} eyebrow="The real pain point" title="小白不是只缺答案，而是缺提问框架" />
+      <div style={{ position: "absolute", left: 142, top: 322, width: 660, height: 424, borderRadius: 24, background: colors.panel, border: `1px solid ${colors.line}`, padding: 34, boxShadow: "0 30px 110px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.04)" }}>
+        <div style={{ fontSize: 33, fontWeight: 800 }}>AI 能回答很多问题</div>
+        <div style={{ marginTop: 18, fontSize: 27, lineHeight: 1.55, color: colors.muted }}>
           但如果用户不知道该补充什么背景、不知道变量之间的关系，提问本身就会变得很模糊。
         </div>
-        <div style={{ marginTop: 34, borderRadius: 18, background: "rgba(240,99,99,0.12)", border: "1px solid rgba(240,99,99,0.26)", padding: 22, color: "#FFD2D2", fontSize: 26 }}>
+        <div style={{ marginTop: 34, borderRadius: 16, background: "linear-gradient(90deg, rgba(255,90,98,0.15), rgba(255,90,98,0.05))", border: "1px solid rgba(255,90,98,0.30)", padding: 22, color: "#FFD2D2", fontSize: 25 }}>
           问题不是“AI 不会答”，而是“上下文没有被组织好”。
         </div>
       </div>
@@ -341,10 +343,11 @@ const BeginnerConfusionScene = () => {
               top: 302 + index * 82,
               width: 520,
               padding: "22px 28px",
-              borderRadius: 22,
+              borderRadius: 18,
               border: `1px solid ${colors.line}`,
-              background: "rgba(12, 24, 38, 0.88)",
-              fontSize: 30,
+              background: "rgba(9, 19, 29, 0.9)",
+              boxShadow: "0 18px 70px rgba(0,0,0,0.22)",
+              fontSize: 28,
               opacity: inValue,
               transform: `translateX(${interpolate(inValue, [0, 1], [80, 0])}px)`
             }}
@@ -364,7 +367,7 @@ const LayerFrameworkScene = () => {
 
   return (
     <AbsoluteFill style={{ opacity }}>
-      <SectionTitle top={96} eyebrow="FinGraph method" title="用层级拓扑，把问题拆成可分析的路径" />
+      <SectionTitle top={104} eyebrow="FinGraph method" title="用层级拓扑，把问题拆成可分析的路径" />
       <div style={{ position: "absolute", left: 126, right: 126, top: 246, display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 18 }}>
         {layers.map((layer, index) => {
           const itemIn = fade(frame, fps, 50 + index * 0.75, 51.2 + index * 0.75);
@@ -373,11 +376,12 @@ const LayerFrameworkScene = () => {
             <div
               key={layer}
               style={{
-                height: 142,
-                borderRadius: 24,
+                height: 138,
+                borderRadius: 18,
                 border: `1px solid ${colors.line}`,
-                background: `linear-gradient(135deg, ${color}22, rgba(11,22,34,0.86))`,
+                background: `linear-gradient(135deg, ${color}1F, rgba(8,17,25,0.88))`,
                 padding: 26,
+                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.035)",
                 opacity: itemIn,
                 transform: `translateY(${interpolate(itemIn, [0, 1], [34, 0])}px)`
               }}
@@ -393,7 +397,7 @@ const LayerFrameworkScene = () => {
         {["收集真实来源", "映射相关层级", "导出 AI 可读上下文"].map((item, index) => {
           const itemIn = fade(frame, fps, 66 + index * 2, 68 + index * 2);
           return (
-            <div key={item} style={{ borderRadius: 22, border: `1px solid ${colors.line}`, background: colors.panel2, padding: 26, opacity: itemIn }}>
+            <div key={item} style={{ borderRadius: 18, border: `1px solid ${colors.line}`, background: colors.panel2, padding: 26, opacity: itemIn, boxShadow: "inset 0 1px 0 rgba(255,255,255,0.035)" }}>
               <div style={{ color: [colors.green, colors.gold, colors.blue][index], fontFamily: sansFont, fontWeight: 800, fontSize: 20 }}>0{index + 1}</div>
               <div style={{ marginTop: 10, fontSize: 30, fontWeight: 800 }}>{item}</div>
             </div>
@@ -408,46 +412,57 @@ const PromptBridgeScene = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const opacity = fade(frame, fps, 79, 82);
-  const scale = interpolate(frame, [s(88, fps), s(96, fps), s(102, fps)], [0.88, 1, 1.08], clamp);
-  const whiteFlash = interpolate(frame, [s(95.2, fps), s(97.2, fps), s(100, fps)], [0, 0.9, 0], clamp);
+  const scale = interpolate(frame, [s(88, fps), s(96, fps), s(102, fps)], [0.9, 1, 1.04], clamp);
+  const lightSweep = interpolate(frame, [s(94.8, fps), s(97, fps), s(100, fps)], [0, 0.65, 0], clamp);
 
   return (
     <AbsoluteFill style={{ opacity }}>
-      <div style={{ position: "absolute", left: 256, right: 256, top: 176, bottom: 170, borderRadius: 38, border: `1px solid ${colors.line}`, background: colors.panel, boxShadow: "0 36px 140px rgba(0,0,0,0.4)", overflow: "hidden", transform: `scale(${scale})` }}>
-        <div style={{ height: 84, borderBottom: `1px solid ${colors.line}`, display: "flex", alignItems: "center", gap: 14, padding: "0 28px", fontFamily: sansFont }}>
-          <span style={{ width: 16, height: 16, borderRadius: 8, background: colors.red }} />
-          <span style={{ width: 16, height: 16, borderRadius: 8, background: colors.gold }} />
-          <span style={{ width: 16, height: 16, borderRadius: 8, background: colors.green }} />
-          <span style={{ marginLeft: 20, color: colors.muted, fontSize: 21 }}>fingraph.local / opening</span>
+      <div style={{ position: "absolute", left: 218, right: 218, top: 146, bottom: 138, borderRadius: 28, border: `1px solid ${colors.lineStrong}`, background: "rgba(6,13,20,0.90)", boxShadow: "0 36px 160px rgba(0,0,0,0.48)", overflow: "hidden", transform: `scale(${scale})` }}>
+        <div style={{ height: 74, borderBottom: `1px solid ${colors.line}`, display: "flex", alignItems: "center", gap: 16, padding: "0 28px", fontFamily: sansFont, background: "rgba(8,17,25,0.92)" }}>
+          <div style={{ width: 34, height: 34, borderRadius: 10, border: `1px solid ${colors.lineStrong}`, background: "#0D151E", display: "grid", placeItems: "center" }}>
+            <FinGraphGlyph compact />
+          </div>
+          <span style={{ fontFamily: serifFont, fontSize: 24, fontWeight: 800 }}>FinGraph</span>
+          <span style={{ marginLeft: 16, color: colors.blue, background: "rgba(63,151,255,0.14)", borderRadius: 10, padding: "10px 16px", fontWeight: 800 }}>总览</span>
+          <span style={{ color: colors.muted, fontWeight: 700 }}>图谱结构</span>
+          <span style={{ color: colors.muted, fontWeight: 700 }}>事件流</span>
+          <span style={{ color: colors.muted, fontWeight: 700 }}>数据源</span>
+          <span style={{ marginLeft: "auto", color: colors.blue, border: `1px solid rgba(63,151,255,0.38)`, borderRadius: 12, padding: "10px 16px", fontWeight: 800 }}>导出</span>
         </div>
-        <div style={{ padding: 46 }}>
-          <div style={{ fontSize: 50, fontWeight: 900 }}>美股金融分析图谱</div>
-          <div style={{ marginTop: 16, color: colors.muted, fontSize: 26 }}>从网页信息流，进入可导出的 Skill Pack。</div>
-          <div style={{ marginTop: 38, display: "grid", gridTemplateColumns: "1.2fr 0.8fr", gap: 22 }}>
-            <MockPanel title="今日一句话总结" color={colors.red} rows={3} />
-            <MockPanel title="八个分析层健康度" color={colors.gold} rows={4} />
-            <MockPanel title="TradingView 图表入口" color={colors.blue} rows={5} />
-            <MockPanel title="导出 Skill Pack" color={colors.green} rows={3} />
+        <div style={{ padding: "34px 38px" }}>
+          <div style={{ color: colors.muted, fontFamily: sansFont, fontSize: 18 }}>Personal Macro Intelligence System</div>
+          <div style={{ marginTop: 8, fontSize: 45, fontWeight: 900 }}>美股金融分析图谱</div>
+          <div style={{ marginTop: 20, height: 54, borderRadius: 12, border: `1px solid ${colors.line}`, background: "rgba(9,19,29,0.82)", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 20px", fontFamily: sansFont }}>
+            <span style={{ color: colors.text, fontWeight: 800 }}>数据定时抓取：纽约时间每天 12:00 自动运行</span>
+            <StatusPill label="Supabase" value="live" color={colors.green} />
+          </div>
+          <div style={{ marginTop: 26, display: "grid", gridTemplateColumns: "0.8fr 1.45fr 0.8fr", gap: 22 }}>
+            <MockPanel title="今日一句话总结" color={colors.slate} rows={4} />
+            <MockPanel title="TradingView 图表入口" color={colors.red} rows={6} featured />
+            <MockPanel title="今日重要资讯" color={colors.slate} rows={5} />
+            <MockPanel title="财政与社会压力" color={colors.slate} rows={4} />
+            <MockPanel title="九层结构图" color={colors.red} rows={5} />
+            <MockPanel title="Skill Pack 导出" color={colors.slate} rows={4} />
           </div>
         </div>
       </div>
-      <div style={{ position: "absolute", left: 0, right: 0, bottom: 54, textAlign: "center", color: colors.muted, fontFamily: sansFont, fontSize: 24 }}>
+      <div style={{ position: "absolute", left: 0, right: 0, bottom: 52, textAlign: "center", color: colors.muted, fontFamily: sansFont, fontSize: 23 }}>
         接下来进入网页录屏展示
       </div>
-      <div style={{ position: "absolute", inset: 0, background: `rgba(255,255,255,${whiteFlash})` }} />
+      <div style={{ position: "absolute", inset: 0, background: `linear-gradient(90deg, transparent, rgba(63,151,255,${lightSweep}), transparent)`, transform: `translateX(${interpolate(lightSweep, [0, 1], [-900, 900])}px)` }} />
     </AbsoluteFill>
   );
 };
 
-const MockPanel = ({ title, color, rows }: { title: string; color: string; rows: number }) => (
-  <div style={{ minHeight: 176, borderRadius: 22, border: `1px solid ${colors.line}`, background: "rgba(8,18,30,0.92)", padding: 22 }}>
+const MockPanel = ({ title, color, rows, featured = false }: { title: string; color: string; rows: number; featured?: boolean }) => (
+  <div style={{ minHeight: featured ? 250 : 176, borderRadius: 18, border: `1px solid ${featured ? "rgba(255,90,98,0.52)" : colors.line}`, background: "rgba(8,17,25,0.92)", padding: 22, boxShadow: featured ? "0 0 70px rgba(255,90,98,0.12), inset 3px 0 0 rgba(255,90,98,0.96)" : "inset 0 1px 0 rgba(255,255,255,0.03)" }}>
     <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-      <span style={{ width: 10, height: 34, borderRadius: 8, background: color }} />
-      <span style={{ fontSize: 26, fontWeight: 800 }}>{title}</span>
+      <span style={{ width: 8, height: 30, borderRadius: 8, background: color }} />
+      <span style={{ fontSize: 24, fontWeight: 800 }}>{title}</span>
     </div>
     <div style={{ marginTop: 24, display: "grid", gap: 12 }}>
       {Array.from({ length: rows }).map((_, index) => (
-        <div key={index} style={{ height: 14, borderRadius: 999, width: `${88 - index * 13}%`, background: `linear-gradient(90deg, ${color}88, rgba(255,255,255,0.08))` }} />
+        <div key={index} style={{ height: featured && index === 1 ? 34 : 12, borderRadius: featured && index === 1 ? 8 : 999, width: `${90 - index * 10}%`, background: `linear-gradient(90deg, ${color}88, rgba(255,255,255,0.07))` }} />
       ))}
     </div>
   </div>
