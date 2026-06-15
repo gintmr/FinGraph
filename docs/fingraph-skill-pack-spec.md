@@ -18,28 +18,27 @@ The exported file should be a zip package:
 
 ```txt
 fingraph-skill-pack-YYYY-MM-DD.zip
+  prompt.md
   SKILL.md
+  context/
+    compact_context.md
   references/
     nine_layer_knowledge_base.md
     relation_topology.md
-  data/
-    events.jsonl
-    indicators.csv
-    sources.csv
   manifest.json
 ```
 
 `SKILL.md` is the entry file for an LLM. It tells the model what role to adopt, which references to read, how to use the evidence files, and how to produce a sourced report.
 
+`prompt.md` is the final user-facing instruction. It must be placed early in TXT exports so the model sees the requested output language and task before reading background material.
+
+`context/compact_context.md` is the curated evidence file. It contains selected events, indicator snapshots, source links, and compact relation notes in natural language. It intentionally replaces raw CSV, JSONL, and relation-map JSON exports to reduce model distraction.
+
 `references/nine_layer_knowledge_base.md` is the long-form background. It should assume the reader has almost no financial knowledge and explain every layer in plain language.
 
 `references/relation_topology.md` explains how the nine layers affect each other. It includes causal chains, adjacency maps, common propagation paths, and a topology graph.
 
-`data/events.jsonl` contains recent evidence items from APIs, RSS, filings, news databases, and search results. One line is one event.
-
-`data/indicators.csv` contains time-series snapshots and market indicators.
-
-`data/sources.csv` lists data sources, API documentation links, license/terms links, and reliability category.
+Raw `events.jsonl`, `indicators.csv`, `sources.csv`, and `relation_map.json` should not be exported by default. They are useful for engineering, but they are noisy for downstream AI report generation.
 
 ## 3. Event JSON Principles
 

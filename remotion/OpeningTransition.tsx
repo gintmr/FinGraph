@@ -43,6 +43,14 @@ const ease = Easing.bezier(0.16, 1, 0.3, 1);
 
 const s = (seconds: number, fps: number) => seconds * fps;
 
+const scenes = {
+  identity: { start: 0, duration: 12 },
+  market: { start: 12, duration: 18 },
+  beginner: { start: 30, duration: 17 },
+  framework: { start: 47, duration: 31 },
+  bridge: { start: 78, duration: 24 }
+};
+
 const fade = (frame: number, fps: number, start: number, end: number) =>
   interpolate(frame, [s(start, fps), s(end, fps)], [0, 1], { ...clamp, easing: ease });
 
@@ -58,22 +66,21 @@ export const OpeningTransition = () => {
     <AbsoluteFill style={{ background: colors.bg, fontFamily: serifFont, color: colors.text, overflow: "hidden" }}>
       <AnimatedBackground />
       <GlobalChrome />
-      <Sequence from={0} durationInFrames={s(30, fps)}>
+      <Sequence from={s(scenes.identity.start, fps)} durationInFrames={s(scenes.identity.duration, fps)}>
         <IdentityScene />
       </Sequence>
-      <Sequence from={s(12, fps)} durationInFrames={s(38, fps)}>
+      <Sequence from={s(scenes.market.start, fps)} durationInFrames={s(scenes.market.duration, fps)}>
         <MarketVariablesScene />
       </Sequence>
-      <Sequence from={s(30, fps)} durationInFrames={s(36, fps)}>
+      <Sequence from={s(scenes.beginner.start, fps)} durationInFrames={s(scenes.beginner.duration, fps)}>
         <BeginnerConfusionScene />
       </Sequence>
-      <Sequence from={s(47, fps)} durationInFrames={s(43, fps)}>
+      <Sequence from={s(scenes.framework.start, fps)} durationInFrames={s(scenes.framework.duration, fps)}>
         <LayerFrameworkScene />
       </Sequence>
-      <Sequence from={s(78, fps)} durationInFrames={s(24, fps)}>
+      <Sequence from={s(scenes.bridge.start, fps)} durationInFrames={s(scenes.bridge.duration, fps)}>
         <PromptBridgeScene />
       </Sequence>
-
       <div
         style={{
           position: "absolute",
@@ -175,9 +182,9 @@ const IdentityScene = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const logo = spring({ frame, fps, config: { damping: 80, stiffness: 90 } });
-  const titleIn = fade(frame, fps, 1.4, 2.6);
-  const subtitleIn = fade(frame, fps, 6, 8.2);
-  const exit = fadeOut(frame, fps, 24, 30);
+  const titleIn = fade(frame, fps, 0.8, 1.8);
+  const subtitleIn = fade(frame, fps, 3.2, 5);
+  const exit = fadeOut(frame, fps, 10, 12);
 
   return (
     <AbsoluteFill style={{ opacity: exit }}>
@@ -216,7 +223,7 @@ const IdentityScene = () => {
       >
         围绕美股市场，把分散信息整理成可以交给 AI 的分析框架。
       </div>
-      <MarketTicker opacity={fade(frame, fps, 13, 16)} />
+      <MarketTicker opacity={fade(frame, fps, 6, 8)} />
     </AbsoluteFill>
   );
 };
@@ -265,7 +272,7 @@ const MarketTicker = ({ opacity }: { opacity: number }) => {
 const MarketVariablesScene = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const opacity = Math.min(fade(frame, fps, 13, 16), fadeOut(frame, fps, 48, 50));
+  const opacity = Math.min(fade(frame, fps, 0.8, 2.2), fadeOut(frame, fps, 15, 18));
   const center = { x: 960, y: 490 };
 
   return (
@@ -283,7 +290,7 @@ const MarketVariablesScene = () => {
         const radius = 365;
         const x = center.x + Math.cos(angle) * radius;
         const y = center.y + Math.sin(angle) * radius;
-        const itemIn = fade(frame, fps, 16 + index * 0.65, 17.4 + index * 0.65);
+        const itemIn = fade(frame, fps, 4 + index * 0.65, 5.4 + index * 0.65);
         return (
           <div key={concept}>
             <Line x1={center.x} y1={center.y} x2={x} y2={y} opacity={itemIn * 0.8} color={index % 3 === 0 ? colors.gold : index % 3 === 1 ? colors.blue : colors.green} />
@@ -318,7 +325,7 @@ const MarketVariablesScene = () => {
 const BeginnerConfusionScene = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const opacity = Math.min(fade(frame, fps, 30, 33), fadeOut(frame, fps, 62, 66));
+  const opacity = Math.min(fade(frame, fps, 0.8, 2.2), fadeOut(frame, fps, 14, 17));
 
   return (
     <AbsoluteFill style={{ opacity }}>
@@ -333,7 +340,7 @@ const BeginnerConfusionScene = () => {
         </div>
       </div>
       {questions.map((question, index) => {
-        const inValue = fade(frame, fps, 37 + index * 1.3, 38.4 + index * 1.3);
+        const inValue = fade(frame, fps, 7 + index * 1.3, 8.4 + index * 1.3);
         return (
           <div
             key={question}
@@ -363,14 +370,14 @@ const BeginnerConfusionScene = () => {
 const LayerFrameworkScene = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const opacity = Math.min(fade(frame, fps, 47, 50), fadeOut(frame, fps, 88, 91));
+  const opacity = Math.min(fade(frame, fps, 0.8, 2.2), fadeOut(frame, fps, 28, 31));
 
   return (
     <AbsoluteFill style={{ opacity }}>
       <SectionTitle top={104} eyebrow="FinGraph method" title="用层级拓扑，把问题拆成可分析的路径" />
       <div style={{ position: "absolute", left: 126, right: 126, top: 246, display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 18 }}>
         {layers.map((layer, index) => {
-          const itemIn = fade(frame, fps, 50 + index * 0.75, 51.2 + index * 0.75);
+          const itemIn = fade(frame, fps, 4 + index * 0.75, 5.2 + index * 0.75);
           const color = [colors.blue, colors.gold, colors.green, colors.red][index % 4];
           return (
             <div
@@ -392,10 +399,10 @@ const LayerFrameworkScene = () => {
           );
         })}
       </div>
-      <TopologyLine delay={59} />
+      <TopologyLine delay={14} />
       <div style={{ position: "absolute", left: 232, right: 232, bottom: 246, display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 18 }}>
         {["收集真实来源", "映射相关层级", "导出 AI 可读上下文"].map((item, index) => {
-          const itemIn = fade(frame, fps, 66 + index * 2, 68 + index * 2);
+          const itemIn = fade(frame, fps, 22 + index * 2, 24 + index * 2);
           return (
             <div key={item} style={{ borderRadius: 18, border: `1px solid ${colors.line}`, background: colors.panel2, padding: 26, opacity: itemIn, boxShadow: "inset 0 1px 0 rgba(255,255,255,0.035)" }}>
               <div style={{ color: [colors.green, colors.gold, colors.blue][index], fontFamily: sansFont, fontWeight: 800, fontSize: 20 }}>0{index + 1}</div>
@@ -411,9 +418,9 @@ const LayerFrameworkScene = () => {
 const PromptBridgeScene = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const opacity = fade(frame, fps, 79, 82);
-  const scale = interpolate(frame, [s(88, fps), s(96, fps), s(102, fps)], [0.9, 1, 1.04], clamp);
-  const lightSweep = interpolate(frame, [s(94.8, fps), s(97, fps), s(100, fps)], [0, 0.65, 0], clamp);
+  const opacity = fade(frame, fps, 0.8, 2.8);
+  const scale = interpolate(frame, [s(8, fps), s(18, fps), s(24, fps)], [0.9, 1, 1.04], clamp);
+  const lightSweep = interpolate(frame, [s(16.8, fps), s(19, fps), s(22, fps)], [0, 0.65, 0], clamp);
 
   return (
     <AbsoluteFill style={{ opacity }}>
@@ -475,11 +482,33 @@ const SectionTitle = ({ top, eyebrow, title }: { top: number; eyebrow: string; t
 
   return (
     <div style={{ position: "absolute", left: 126, top, opacity }}>
-      <div style={{ fontFamily: sansFont, color: colors.blue, fontSize: 22, fontWeight: 800, textTransform: "uppercase", letterSpacing: 1.2 }}>{eyebrow}</div>
-      <div style={{ marginTop: 14, fontSize: 54, fontWeight: 900 }}>{title}</div>
+      <div style={{ fontFamily: sansFont, color: colors.muted, fontSize: 19, fontWeight: 800, textTransform: "uppercase", letterSpacing: 1.2 }}>{eyebrow}</div>
+      <div style={{ marginTop: 14, fontSize: 52, fontWeight: 900, textShadow: "0 20px 80px rgba(63,151,255,0.12)" }}>{title}</div>
     </div>
   );
 };
+
+const StatusPill = ({ label, value, color }: { label: string; value: string; color: string }) => (
+  <div
+    style={{
+      display: "flex",
+      alignItems: "center",
+      gap: 8,
+      height: 34,
+      padding: "0 13px",
+      borderRadius: 999,
+      border: `1px solid ${color}55`,
+      color,
+      background: `${color}16`,
+      fontSize: 14,
+      fontWeight: 800
+    }}
+  >
+    <span style={{ width: 7, height: 7, borderRadius: 99, background: color, boxShadow: `0 0 16px ${color}` }} />
+    <span>{label}</span>
+    <span style={{ color: colors.text, opacity: 0.84 }}>{value}</span>
+  </div>
+);
 
 const TopologyLine = ({ delay }: { delay: number }) => {
   const frame = useCurrentFrame();

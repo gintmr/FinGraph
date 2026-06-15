@@ -169,10 +169,7 @@ The exported content includes:
 - `SKILL.md`
 - nine-layer knowledge base
 - relation topology
-- recent events with original URLs
-- indicators CSV
-- source registry CSV
-- relation map JSON
+- compact context with selected events, indicator summaries, source links, and relation notes
 - final user prompt
 
 The final prompt asks the downstream AI to produce a complete U.S. equity macro report, explain each layer in detail, cite original source links, and provide beginner follow-up questions from multiple angles.

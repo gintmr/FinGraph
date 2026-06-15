@@ -15,14 +15,13 @@ Before writing a report, read:
 
 1. `references/nine_layer_knowledge_base.md` for the FinGraph nine-layer framework.
 2. `references/relation_topology.md` for cross-layer causal maps.
-3. `data/events.jsonl` for recent events and links.
-4. `data/indicators.csv` for market and macro indicators.
+3. `context/compact_context.md` for curated recent events, indicator snapshots, source links, and compact relation notes.
 
-If a referenced data file is missing, say so and continue with the available evidence.
+Do not ask for raw CSV, JSONL, or `relation_map.json` files. The compact context is intentionally curated to avoid distracting implementation details.
 
 ## Evidence Rules
 
-- Treat `url` as mandatory evidence for each event.
+- Treat original source links in `context/compact_context.md` as mandatory evidence for factual claims.
 - Do not invent source links.
 - Do not quote long copyrighted passages from linked articles.
 - Distinguish fact, inference, and forecast.
