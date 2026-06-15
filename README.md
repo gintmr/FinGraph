@@ -26,7 +26,6 @@ FinGraph turns that problem into three connected layers:
 - **Scheduled collection**: Vercel Cron can call the collector endpoint daily.
 - **Skill Pack export**: export as ZIP, download TXT, or copy TXT directly to clipboard.
 - **Beginner-friendly AI prompt**: exports ask the downstream AI to generate a U.S. stock market macro report, explain every layer, and provide follow-up question examples.
-- **Remotion opening animation**: a separate Remotion subproject creates visual-only intro footage for project videos. Subtitles are intentionally not baked into the video.
 
 ## Nine-Layer Framework
 
@@ -49,7 +48,6 @@ FinGraph maps evidence into a structured topology:
 - Supabase Postgres
 - Vercel Cron and Vercel deployment
 - Cloudflare custom domain
-- Remotion for project intro animation
 
 ## Data Sources
 
@@ -173,25 +171,6 @@ The exported content includes:
 - final user prompt
 
 The final prompt asks the downstream AI to produce a complete U.S. equity macro report, explain each layer in detail, cite original source links, and provide beginner follow-up questions from multiple angles.
-
-## Remotion Intro Video
-
-The Remotion subproject lives in `remotion/`.
-
-```bash
-npm --prefix remotion install
-npm run video:studio
-npm run video:still:opening
-npm run video:render:opening
-```
-
-The opening animation is visual-only. It does not bake subtitles into the exported video because subtitles are intended to be added separately in CapCut / Jianying.
-
-Rendered video output is ignored by Git:
-
-```txt
-remotion/out/
-```
 
 ## Deployment
 

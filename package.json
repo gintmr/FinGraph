@@ -8,10 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "next typegen && tsc --noEmit",
-    "validate:events": "node scripts/validate-events.mjs",
-    "video:studio": "npm --prefix remotion run studio",
-    "video:still:opening": "npm --prefix remotion run still:opening",
-    "video:render:opening": "npm --prefix remotion run render:opening"
+    "validate:events": "node scripts/validate-events.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",
