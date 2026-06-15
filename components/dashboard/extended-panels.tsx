@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -519,7 +519,7 @@ export function GlobalHotspotsPanel({ events = [] }: { events?: FinGraphEvent[] 
                     {layerLabels[layer]}
                   </Badge>
                 ))}
-                {item.assets.slice(0, 4).map((asset) => (
+                {item.assets.filter((asset) => asset !== "DXY").slice(0, 4).map((asset) => (
                   <span key={asset} className="rounded-full border border-line bg-panel px-2.5 py-1 text-xs font-medium text-muted">
                     {asset}
                   </span>
@@ -714,11 +714,15 @@ export function ChartLinksPanel({ indicators }: { indicators: MarketIndicator[] 
 const tradingViewSymbols = [
   { label: "SPY", symbol: "AMEX:SPY", href: "https://www.tradingview.com/chart/?symbol=AMEX:SPY", note: "美股大盘风险偏好" },
   { label: "QQQ", symbol: "NASDAQ:QQQ", href: "https://www.tradingview.com/chart/?symbol=NASDAQ:QQQ", note: "科技成长与 AI 叙事" },
+  { label: "DIA", symbol: "AMEX:DIA", href: "https://www.tradingview.com/chart/?symbol=AMEX:DIA", note: "道琼斯与传统蓝筹股" },
+  { label: "IWM", symbol: "AMEX:IWM", href: "https://www.tradingview.com/chart/?symbol=AMEX:IWM", note: "小盘股与美国国内周期" },
   { label: "TLT", symbol: "NASDAQ:TLT", href: "https://www.tradingview.com/chart/?symbol=NASDAQ:TLT", note: "长端利率与期限溢价" },
   { label: "GLD", symbol: "AMEX:GLD", href: "https://www.tradingview.com/chart/?symbol=AMEX:GLD", note: "黄金、实际利率与避险" },
   { label: "USO", symbol: "AMEX:USO", href: "https://www.tradingview.com/chart/?symbol=AMEX:USO", note: "原油与能源风险" },
-  { label: "DXY", symbol: "TVC:DXY", href: "https://www.tradingview.com/chart/?symbol=TVC:DXY", note: "美元流动性与汇率压力" },
-  { label: "US10Y", symbol: "TVC:US10Y", href: "https://www.tradingview.com/chart/?symbol=TVC:US10Y", note: "10Y 美债收益率" }
+  { label: "XLK", symbol: "AMEX:XLK", href: "https://www.tradingview.com/chart/?symbol=AMEX:XLK", note: "科技板块相对强弱" },
+  { label: "XLF", symbol: "AMEX:XLF", href: "https://www.tradingview.com/chart/?symbol=AMEX:XLF", note: "金融板块与利率敏感性" },
+  { label: "XLE", symbol: "AMEX:XLE", href: "https://www.tradingview.com/chart/?symbol=AMEX:XLE", note: "能源板块与原油传导" },
+  { label: "NVDA", symbol: "NASDAQ:NVDA", href: "https://www.tradingview.com/chart/?symbol=NASDAQ:NVDA", note: "AI 资本开支链条核心权重股" }
 ];
 
 function TradingViewChart({ symbol }: { symbol: string }) {
@@ -749,5 +753,226 @@ function TradingViewChart({ symbol }: { symbol: string }) {
         allowFullScreen
       />
     </div>
+  );
+}
+
+export function ExternalInfoHubPanel() {
+  const widgets = externalWidgets;
+  const [activeWidget, setActiveWidget] = useState(widgets[0]);
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
+
+  useEffect(() => {
+    const updateTheme = () => setTheme(document.documentElement.dataset.theme === "light" ? "light" : "dark");
+    updateTheme();
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <Card>
+      <CardHeader title="外部信息终端" subtitle="嵌入免费、无需注册的整理型信息源；无法嵌入的网站保留为可点击入口。" />
+      <CardBody>
+        <div className="overflow-hidden rounded-lg border border-line bg-panel2/70">
+          <div className="flex flex-wrap items-center gap-2 border-b border-line p-2">
+            {widgets.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => setActiveWidget(item)}
+                className={`rounded-md border px-2.5 py-1.5 text-xs font-semibold transition ${
+                  activeWidget.id === item.id
+                    ? "border-blue/40 bg-blue/15 text-blue"
+                    : "border-line bg-panel text-muted hover:text-text"
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+            <a
+              href={activeWidget.href}
+              target="_blank"
+              rel="noreferrer"
+              className="ml-auto rounded-md border border-blue/30 bg-blue/10 px-2.5 py-1.5 text-xs font-semibold text-blue transition hover:bg-blue/15"
+            >
+              打开源页面
+            </a>
+          </div>
+          <TradingViewScriptWidget key={`${activeWidget.id}-${theme}`} widget={activeWidget} theme={theme} />
+          <div className="border-t border-line px-3 py-2 text-xs leading-5 text-muted">
+            {activeWidget.note}
+          </div>
+        </div>
+        <div className="mt-4 grid gap-2 sm:grid-cols-2">
+          {externalLinks.map((item) => (
+            <a
+              key={item.href}
+              href={item.href}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-lg border border-line bg-panel2/70 p-3 transition hover:border-blue/40 hover:bg-blue/10"
+            >
+              <div className="font-semibold text-text">{item.label}</div>
+              <div className="mt-1 text-xs leading-5 text-muted">{item.note}</div>
+            </a>
+          ))}
+        </div>
+      </CardBody>
+    </Card>
+  );
+}
+
+type ExternalWidget = {
+  id: string;
+  label: string;
+  src: string;
+  href: string;
+  note: string;
+  height: number;
+  config: (theme: "dark" | "light") => Record<string, unknown>;
+};
+
+const externalWidgets: ExternalWidget[] = [
+  {
+    id: "calendar",
+    label: "宏观日历",
+    src: "https://s3.tradingview.com/external-embedding/embed-widget-events.js",
+    href: "https://www.tradingview.com/economic-calendar/",
+    note: "TradingView 经济日历，适合快速查看美国宏观事件、央行日程和高影响数据。",
+    height: 520,
+    config: (theme) => ({
+      colorTheme: theme,
+      isTransparent: false,
+      width: "100%",
+      height: "100%",
+      locale: "zh_CN",
+      importanceFilter: "-1,0,1",
+      countryFilter: "us"
+    })
+  },
+  {
+    id: "heatmap",
+    label: "美股热力图",
+    src: "https://s3.tradingview.com/external-embedding/embed-widget-stock-heatmap.js",
+    href: "https://www.tradingview.com/heatmap/stock/",
+    note: "TradingView 美股热力图，把板块、权重与涨跌幅压缩到一张可扫视视图里。",
+    height: 520,
+    config: (theme) => ({
+      exchanges: [],
+      dataSource: "SPX500",
+      grouping: "sector",
+      blockSize: "market_cap_basic",
+      blockColor: "change",
+      locale: "zh_CN",
+      symbolUrl: "",
+      colorTheme: theme,
+      hasTopBar: false,
+      isDataSetEnabled: false,
+      isZoomEnabled: true,
+      hasSymbolTooltip: true,
+      width: "100%",
+      height: "100%"
+    })
+  },
+  {
+    id: "news",
+    label: "市场新闻",
+    src: "https://s3.tradingview.com/external-embedding/embed-widget-timeline.js",
+    href: "https://www.tradingview.com/news/",
+    note: "TradingView 市场新闻流，用作整理型新闻入口；重要结论仍应回到原始来源交叉验证。",
+    height: 520,
+    config: (theme) => ({
+      feedMode: "market",
+      market: "stock",
+      isTransparent: false,
+      displayMode: "regular",
+      width: "100%",
+      height: "100%",
+      colorTheme: theme,
+      locale: "zh_CN"
+    })
+  },
+  {
+    id: "overview",
+    label: "市场概览",
+    src: "https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js",
+    href: "https://www.tradingview.com/markets/",
+    note: "TradingView 市场概览，集中观察指数、ETF、商品和核心权重股。",
+    height: 520,
+    config: (theme) => ({
+      colorTheme: theme,
+      dateRange: "12M",
+      showChart: true,
+      locale: "zh_CN",
+      largeChartUrl: "",
+      isTransparent: false,
+      showSymbolLogo: true,
+      showFloatingTooltip: false,
+      width: "100%",
+      height: "100%",
+      tabs: [
+        {
+          title: "美股指数",
+          symbols: [
+            { s: "AMEX:SPY", d: "SPY" },
+            { s: "NASDAQ:QQQ", d: "QQQ" },
+            { s: "AMEX:DIA", d: "DIA" },
+            { s: "AMEX:IWM", d: "IWM" }
+          ]
+        },
+        {
+          title: "板块与风险",
+          symbols: [
+            { s: "AMEX:XLK", d: "科技 XLK" },
+            { s: "AMEX:XLF", d: "金融 XLF" },
+            { s: "AMEX:XLE", d: "能源 XLE" },
+            { s: "AMEX:TLT", d: "长债 TLT" },
+            { s: "AMEX:GLD", d: "黄金 GLD" }
+          ]
+        }
+      ]
+    })
+  }
+];
+
+const externalLinks = [
+  { label: "Yahoo Finance", href: "https://finance.yahoo.com/markets/", note: "无法稳定 iframe 嵌入，保留为市场总览入口。" },
+  { label: "Investing.com 日历", href: "https://www.investing.com/economic-calendar/", note: "宏观日历和预期值入口，部分页面会限制 iframe。" },
+  { label: "雪球热股", href: "https://xueqiu.com/", note: "中文社区和个股讨论入口，通常不允许第三方 iframe。" },
+  { label: "金十数据", href: "https://www.jin10.com/", note: "中文宏观快讯入口，若后续开放稳定组件再升级为嵌入。" }
+];
+
+function TradingViewScriptWidget({ widget, theme }: { widget: ExternalWidget; theme: "dark" | "light" }) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) {
+      return;
+    }
+
+    container.innerHTML = "";
+    const widgetNode = document.createElement("div");
+    widgetNode.className = "tradingview-widget-container__widget";
+    widgetNode.style.height = "100%";
+    widgetNode.style.width = "100%";
+
+    const script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = widget.src;
+    script.async = true;
+    script.innerHTML = JSON.stringify(widget.config(theme));
+
+    container.appendChild(widgetNode);
+    container.appendChild(script);
+
+    return () => {
+      container.innerHTML = "";
+    };
+  }, [theme, widget]);
+
+  return (
+    <div ref={containerRef} className="tradingview-widget-container bg-panel" style={{ height: widget.height }} />
   );
 }

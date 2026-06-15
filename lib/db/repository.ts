@@ -1,5 +1,6 @@
 import { getRuntimeSources, sourceRegistry } from "@/lib/config/sources";
 import { buildLiveDashboardContext } from "@/lib/analysis/dashboard";
+import { isRetainedEvent } from "@/lib/analysis/event-filters";
 import { readLocalLiveCache } from "@/lib/db/local-cache";
 import { getSeedDashboard, seedGraphEdges, seedGraphNodes, seedIndicators } from "@/lib/mock-data";
 import { getSupabaseAdmin, hasSupabaseAdminEnv } from "@/lib/supabase/server";
@@ -87,11 +88,12 @@ export async function getDashboardPayload(): Promise<DashboardPayload> {
       };
     }
 
-    const context = buildLiveDashboardContext(cache.events, cache.indicators);
+    const retainedEvents = cache.events.filter(isRetainedEvent);
+    const context = buildLiveDashboardContext(retainedEvents, cache.indicators);
     return {
       ...seed,
       ...context,
-      events: cache.events,
+      events: retainedEvents,
       indicators: cache.indicators,
       graphNodes: seed.graphNodes,
       graphEdges: seed.graphEdges,
@@ -117,7 +119,7 @@ export async function getDashboardPayload(): Promise<DashboardPayload> {
       return localLivePayload();
     }
 
-    const liveEvents = events.data?.length ? asEvents(events.data) : [];
+    const liveEvents = events.data?.length ? asEvents(events.data).filter(isRetainedEvent) : [];
     const liveIndicators = indicators.data?.length ? asIndicators(indicators.data) : [];
     const context = buildLiveDashboardContext(liveEvents, liveIndicators);
 
@@ -159,7 +161,7 @@ export async function getEventsForExport(days = 14): Promise<FinGraphEvent[]> {
     return getSeedDashboard().events;
   }
 
-  return asEvents(data);
+  return asEvents(data).filter(isRetainedEvent);
 }
 
 export async function getIndicatorsForExport(): Promise<MarketIndicator[]> {

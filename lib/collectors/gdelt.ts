@@ -1,5 +1,6 @@
 import type { CollectorResult, FinGraphEvent } from "@/lib/types";
 import { failedResult, fetchJson, makeEvent } from "@/lib/collectors/utils";
+import { containsHangul } from "@/lib/analysis/event-filters";
 
 type GdeltDocResponse = {
   articles?: Array<{
@@ -17,7 +18,7 @@ export async function collectGdelt(): Promise<CollectorResult> {
     const url = new URL("https://api.gdeltproject.org/api/v2/doc/doc");
     url.searchParams.set(
       "query",
-      "(war OR military OR conflict OR sanctions OR airstrike OR missile OR \"Red Sea\" OR \"Taiwan Strait\" OR \"South China Sea\" OR \"shipping disruption\" OR \"export controls\" OR \"energy security\")"
+      "((war OR military OR conflict OR sanctions OR airstrike OR missile OR \"Red Sea\" OR \"Taiwan Strait\" OR \"South China Sea\" OR \"shipping disruption\" OR \"export controls\" OR \"energy security\") sourcelang:english)"
     );
     url.searchParams.set("mode", "ArtList");
     url.searchParams.set("format", "json");
@@ -26,7 +27,7 @@ export async function collectGdelt(): Promise<CollectorResult> {
 
     const data = await fetchJson<GdeltDocResponse>(url.toString(), undefined, 20000);
     const events: FinGraphEvent[] = (data.articles ?? [])
-      .filter((article) => article.title && article.url)
+      .filter((article) => article.title && article.url && !containsHangul(`${article.title} ${article.url}`))
       .slice(0, 6)
       .map((article, index) =>
         makeEvent({
@@ -42,7 +43,7 @@ export async function collectGdelt(): Promise<CollectorResult> {
           direction: "uncertain",
           strength: index < 2 ? 3 : 2,
           horizon: "short",
-          assets: ["QQQ", "SPY", "DXY", "Oil"],
+          assets: ["QQQ", "SPY", "Oil"],
           confidence: 0.46
         })
       );

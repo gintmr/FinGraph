@@ -12,6 +12,7 @@ import {
   ChartLinksPanel,
   EarningsCalendarPanel,
   EconomicCalendarPanel,
+  ExternalInfoHubPanel,
   FedWatchPanel,
   FiscalSocialPanel,
   GlobalHotspotsPanel,
@@ -59,7 +60,7 @@ type DropTarget = {
   top: number;
 };
 
-const storageKey = "fingraph-dashboard-panels-v5";
+const storageKey = "fingraph-dashboard-panels-v6";
 const dashboardColumns: DashboardColumnId[] = ["left", "center", "right"];
 const dropPreviewHeight = 68;
 const dropSwitchDeadZone = 18;
@@ -72,7 +73,7 @@ const columnLabels: Record<DashboardColumnId, string> = {
 
 const defaultColumns: ColumnPanels = {
   left: ["market_overview", "impact_matrix", "trend", "inflation_components", "fed_watch", "yield_curve", "fiscal_social"],
-  center: ["daily_summary", "news", "global_hotspots", "chart_links", "financial_graph", "layer_health", "asset_heatmap", "export"],
+  center: ["daily_summary", "news", "global_hotspots", "chart_links", "external_info_hub", "financial_graph", "layer_health", "asset_heatmap", "export"],
   right: ["economic_calendar", "cftc_positioning", "risk_gauge", "sector_radar", "ai_theme", "earnings_calendar", "risk"]
 };
 
@@ -376,6 +377,12 @@ export function DashboardWorkspace({ payload }: { payload: DashboardPayload }) {
         title: "TradingView 图表入口",
         tone: "blue",
         render: () => <ChartLinksPanel indicators={payload.indicators} />
+      },
+      {
+        id: "external_info_hub",
+        title: "外部信息终端",
+        tone: "red",
+        render: () => <ExternalInfoHubPanel />
       },
       {
         id: "sector_radar",

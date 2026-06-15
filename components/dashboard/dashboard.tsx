@@ -1,5 +1,6 @@
 import { DashboardWorkspace } from "@/components/dashboard/dashboard-workspace";
 import { DataStatusBanner } from "@/components/dashboard/data-status-banner";
+import { TimeStatusBanner } from "@/components/dashboard/time-status-banner";
 import type { DashboardPayload } from "@/lib/types";
 
 const modeLabels: Record<DashboardPayload["mode"], string> = {
@@ -20,6 +21,8 @@ export function Dashboard({ payload }: { payload: DashboardPayload }) {
           数据模式：{modeLabels[payload.mode]} · {new Date(payload.generatedAt).toLocaleString("zh-CN")}
         </div>
       </div>
+
+      <TimeStatusBanner />
 
       <DataStatusBanner payload={payload} />
 
