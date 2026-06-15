@@ -22,18 +22,25 @@ export const embeddedPageSources: ExternalPlatform[] = [
     note: "英文实时市场快讯、Squawk、宏观、债券、商品和美股新闻入口。"
   },
   {
-    id: "forexlive",
-    name: "ForexLive",
-    url: "https://www.forexlive.com/",
+    id: "cls_telegraph",
+    name: "财联社电报",
+    url: "https://www.cls.cn/telegraph",
     category: "news",
-    note: "美元、央行、利率、外汇、商品和风险偏好快讯入口。"
+    note: "中文 7x24 电报、政策、公司、产业和全球市场快讯入口。"
   },
   {
-    id: "fxstreet_calendar",
-    name: "FXStreet 经济日历",
-    url: "https://www.fxstreet.com/economic-calendar",
-    category: "calendar",
-    note: "全球宏观日历、央行讲话、美元与大宗商品相关事件入口。"
+    id: "eastmoney_kuaixun",
+    name: "东方财富快讯",
+    url: "https://kuaixun.eastmoney.com/",
+    category: "news",
+    note: "中文 7x24 财经快讯、市场异动、宏观和政策新闻入口。"
+  },
+  {
+    id: "gelonghui_live",
+    name: "格隆汇快讯",
+    url: "http://www.gelonghui.com/live/",
+    category: "news",
+    note: "港美股、中概、全球市场和产业新闻快讯入口。"
   },
   {
     id: "investing_calendar",
