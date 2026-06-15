@@ -207,8 +207,31 @@ export const sourceRegistry: SourceDefinition[] = [
   }
 ];
 
+function hasConfiguredEnv(envName?: string) {
+  if (!envName) {
+    return false;
+  }
+
+  return Boolean(process.env[envName]?.trim());
+}
+
+export function getRuntimeSourceStatus(source: SourceDefinition): SourceDefinition["connector_status"] {
+  if (source.connector_status !== "key_required") {
+    return source.connector_status;
+  }
+
+  return hasConfiguredEnv(source.api_key_env) ? "implemented" : "key_required";
+}
+
+export function getRuntimeSources(): SourceDefinition[] {
+  return sourceRegistry.map((source) => ({
+    ...source,
+    connector_status: getRuntimeSourceStatus(source)
+  }));
+}
+
 export function sourceStatusSummary() {
-  return sourceRegistry.reduce(
+  return getRuntimeSources().reduce(
     (summary, source) => {
       summary.total += 1;
       summary[source.connector_status] += 1;

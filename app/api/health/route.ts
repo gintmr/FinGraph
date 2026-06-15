@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { currentDataMode, getIngestionStatus } from "@/lib/db/repository";
 import { sourceStatusSummary } from "@/lib/config/sources";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   const ingestion = await getIngestionStatus();
 

@@ -1,4 +1,4 @@
-import { sourceRegistry } from "@/lib/config/sources";
+import { getRuntimeSources, sourceRegistry } from "@/lib/config/sources";
 import { buildLiveDashboardContext } from "@/lib/analysis/dashboard";
 import { readLocalLiveCache } from "@/lib/db/local-cache";
 import { getSeedDashboard, seedGraphEdges, seedGraphNodes, seedIndicators } from "@/lib/mock-data";
@@ -45,7 +45,7 @@ function dedupeById<T extends { id: string }>(items: T[]): T[] {
 }
 
 function sourceRows() {
-  return sourceRegistry.map((source) => ({
+  return getRuntimeSources().map((source) => ({
     id: source.id,
     name: source.name,
     type: source.type,
@@ -81,7 +81,7 @@ export async function getDashboardPayload(): Promise<DashboardPayload> {
         indicators: [],
         graphNodes: seed.graphNodes,
         graphEdges: seed.graphEdges,
-        sources: sourceRegistry,
+        sources: getRuntimeSources(),
         generatedAt: new Date().toISOString(),
         mode: "supabase" as const
       };
@@ -95,7 +95,7 @@ export async function getDashboardPayload(): Promise<DashboardPayload> {
       indicators: cache.indicators,
       graphNodes: seed.graphNodes,
       graphEdges: seed.graphEdges,
-      sources: sourceRegistry,
+      sources: getRuntimeSources(),
       generatedAt: cache.generatedAt,
       mode: "local_cache" as const
     };
@@ -132,7 +132,7 @@ export async function getDashboardPayload(): Promise<DashboardPayload> {
       indicators: liveIndicators,
       graphNodes: graphNodes.data?.length ? asGraphNodes(graphNodes.data) : seed.graphNodes,
       graphEdges: graphEdges.data?.length ? asGraphEdges(graphEdges.data) : seed.graphEdges,
-      sources: sourceRegistry,
+      sources: getRuntimeSources(),
       generatedAt: new Date().toISOString(),
       mode: "supabase"
     };
@@ -199,7 +199,7 @@ export async function getGraphForExport(): Promise<{ nodes: GraphNode[]; edges: 
 }
 
 export async function getSources(): Promise<SourceDefinition[]> {
-  return sourceRegistry;
+  return getRuntimeSources();
 }
 
 export async function getIngestionStatus() {

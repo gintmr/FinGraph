@@ -500,7 +500,7 @@ export function GlobalHotspotsPanel({ events = [] }: { events?: FinGraphEvent[] 
 
   return (
     <Card>
-      <CardHeader title="全球热点事件源" subtitle="不画示意地图，只展示可点击来源与简要说明。" />
+      <CardHeader title="地缘热点事件源" subtitle="不画示意地图，只展示 GDELT、能源与供应链相关的可点击来源。" />
       <CardBody>
         {!hotspotEvents.length ? (
           <EmptyRealData message="暂无真实热点事件。GDELT 可能被临时限流；后续也可以接入 Guardian Open Platform 或其他免费新闻源作为补充。" />
@@ -649,7 +649,7 @@ export function ChartLinksPanel({ indicators }: { indicators: MarketIndicator[] 
 
   return (
     <Card>
-      <CardHeader title="外部图表入口" subtitle="把真实数据源和 TradingView 图表集中放在一个可点击面板里。" />
+      <CardHeader title="TradingView 图表入口" subtitle="把真实市场代理指标、宏观数据源和 TradingView 图表集中放在一个可点击面板里。" />
       <CardBody>
         <div className="grid gap-2 sm:grid-cols-2">
           {[...liveChartLinks, ...marketSymbols].slice(0, 9).map((item) => (

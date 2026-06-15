@@ -59,7 +59,7 @@ type DropTarget = {
   top: number;
 };
 
-const storageKey = "fingraph-dashboard-panels-v4";
+const storageKey = "fingraph-dashboard-panels-v5";
 const dashboardColumns: DashboardColumnId[] = ["left", "center", "right"];
 const dropPreviewHeight = 68;
 const dropSwitchDeadZone = 18;
@@ -71,9 +71,9 @@ const columnLabels: Record<DashboardColumnId, string> = {
 };
 
 const defaultColumns: ColumnPanels = {
-  left: ["market_overview", "impact_matrix", "trend", "inflation_components", "fed_watch", "economic_calendar", "yield_curve", "fiscal_social"],
-  center: ["daily_summary", "news", "financial_graph", "layer_health", "asset_heatmap", "export"],
-  right: ["cftc_positioning", "risk_gauge", "global_hotspots", "chart_links", "sector_radar", "ai_theme", "earnings_calendar", "risk"]
+  left: ["market_overview", "impact_matrix", "trend", "inflation_components", "fed_watch", "yield_curve", "fiscal_social"],
+  center: ["daily_summary", "news", "global_hotspots", "chart_links", "financial_graph", "layer_health", "asset_heatmap", "export"],
+  right: ["economic_calendar", "cftc_positioning", "risk_gauge", "sector_radar", "ai_theme", "earnings_calendar", "risk"]
 };
 
 const toneStyles: Record<
@@ -361,7 +361,7 @@ export function DashboardWorkspace({ payload }: { payload: DashboardPayload }) {
       },
       {
         id: "global_hotspots",
-        title: "全球热点事件源",
+        title: "地缘热点事件源",
         tone: "red",
         render: () => <GlobalHotspotsPanel events={payload.events} />
       },
@@ -373,7 +373,7 @@ export function DashboardWorkspace({ payload }: { payload: DashboardPayload }) {
       },
       {
         id: "chart_links",
-        title: "外部图表入口",
+        title: "TradingView 图表入口",
         tone: "blue",
         render: () => <ChartLinksPanel indicators={payload.indicators} />
       },

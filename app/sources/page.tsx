@@ -7,6 +7,8 @@ import { sourceStatusSummary } from "@/lib/config/sources";
 import { getIngestionStatus, getSources } from "@/lib/db/repository";
 import { connectorStatusLabel, connectorStatusVariant, reliabilityLabel, sourceTypeLabel } from "@/components/dashboard/labels";
 
+export const dynamic = "force-dynamic";
+
 export default async function SourcesPage() {
   const sources = await getSources();
   const summary = sourceStatusSummary();
@@ -54,7 +56,7 @@ export default async function SourcesPage() {
         </div>
 
         <Card>
-          <CardHeader title="数据源注册表" subtitle="只有“已接入”和“需配置 Key”的来源有采集器；“待接入”仅是候选数据源，不会生成当前事件。" />
+          <CardHeader title="数据源注册表" subtitle="状态会按当前服务器环境变量实时判断；已配置 Key 的来源会作为已接入采集器显示。" />
           <CardBody>
             <div className="overflow-x-auto thin-scrollbar">
               <table className="w-full min-w-[1560px] table-fixed border-separate border-spacing-y-2 text-left text-sm">
@@ -88,7 +90,7 @@ export default async function SourcesPage() {
                       </td>
                       <td className="whitespace-nowrap px-3 py-3">
                         <Badge variant={connectorStatusVariant(source.connector_status)}>
-                          {connectorStatusLabel(source.connector_status)}
+                          {source.connector_status === "implemented" && source.api_key_required ? "Key 已配置" : connectorStatusLabel(source.connector_status)}
                         </Badge>
                       </td>
                       <td className="whitespace-nowrap px-3 py-3 text-muted">{sourceTypeLabel(source.type)}</td>
