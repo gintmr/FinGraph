@@ -101,3 +101,4 @@ The exported skill must instruct the receiving model to:
 5. Map every important event to layers, nodes, assets, direction, strength, and time horizon.
 6. Explain cross-layer propagation rather than only summarizing news.
 7. Produce a final investor-oriented view without giving personalized financial advice.
+8. Include a beginner question guide that suggests follow-up questions from rates, inflation, fiscal policy, earnings, industry, geopolitics, sentiment, risk management, and source-verification angles.

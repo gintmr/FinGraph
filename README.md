@@ -1,61 +1,216 @@
-# FinGraph
+# FinGraph · 美股金融分析图谱
 
-FinGraph is a personal macro-financial intelligence dashboard. It collects source-linked macro, market, filing, RSS, and search evidence, maps events to a nine-layer financial graph, and exports a portable Skill Pack for deep analysis in any large language model.
+![FinGraph hero](public/readme-hero.svg)
 
-## Stack
+FinGraph is a U.S. equity-centered macro-financial intelligence dashboard. It collects source-linked macro data, market indicators, official RSS feeds, filings, public databases, and embedded market information pages, then maps them into a nine-layer reasoning framework for U.S. stock market analysis.
 
-- Next.js + TypeScript
+The product is designed for beginners as much as advanced users: instead of assuming the user already knows how to ask financial questions, FinGraph exports a complete Skill Pack that teaches an AI model how to explain the market layer by layer, cite original links, and suggest useful follow-up questions.
+
+## Core Idea
+
+Many financial dashboards show data, but they do not explain how a beginner should connect that data to a market question. FinGraph organizes evidence around one practical problem:
+
+> How do current macro, policy, fiscal, industry, corporate, geopolitical, social, and market signals affect U.S. equities?
+
+FinGraph turns that problem into three connected layers:
+
+- **Evidence layer**: official APIs, public datasets, RSS, filings, market data, and source links.
+- **Reasoning layer**: the FinGraph nine-layer macro framework and relation topology.
+- **Export layer**: ZIP/TXT Skill Pack exports that can be pasted into another AI model for a detailed report.
+
+## Features
+
+- **Dashboard for U.S. equity macro analysis**: daily summary, health scores, events, market indicators, fiscal/social pressure, geopolitical signals, external information terminals, and TradingView chart embeds.
+- **Real source links everywhere**: events and indicators keep original URLs so users can verify the evidence.
+- **Supabase-backed live data mode**: collected rows are persisted and shown only after real data exists.
+- **Scheduled collection**: Vercel Cron can call the collector endpoint daily.
+- **Skill Pack export**: export as ZIP, download TXT, or copy TXT directly to clipboard.
+- **Beginner-friendly AI prompt**: exports ask the downstream AI to generate a U.S. stock market macro report, explain every layer, and provide follow-up question examples.
+- **Remotion opening animation**: a separate Remotion subproject creates visual-only intro footage for project videos. Subtitles are intentionally not baked into the video.
+
+## Nine-Layer Framework
+
+FinGraph maps evidence into a structured topology:
+
+1. **Currency / liquidity layer**: dollar system, liquidity, funding pressure.
+2. **Central-bank layer**: Fed policy, inflation reaction function, real rates.
+3. **Fiscal layer**: Treasury supply, deficit, debt service, fiscal credibility.
+4. **Industry layer**: AI, semiconductors, energy, banks, manufacturing, supply chains.
+5. **Corporate layer**: earnings, margins, revenue growth, buybacks, guidance.
+6. **Geopolitical layer**: sanctions, wars, shipping risk, export controls, energy routes.
+7. **Social layer**: labor market, wages, consumer stress, housing, political pressure.
+8. **Market layer**: valuation, breadth, volatility, credit, positioning, sentiment.
+9. **Asset-decision layer**: SPY, QQQ, TLT, DXY, gold, oil, sectors, and cash.
+
+## Tech Stack
+
+- Next.js 16 + React 19 + TypeScript
 - Tailwind CSS
 - Supabase Postgres
-- Vercel Cron
-- Cloudflare DNS/custom domain
+- Vercel Cron and Vercel deployment
+- Cloudflare custom domain
+- Remotion for project intro animation
 
-## Local Setup
+## Data Sources
 
-1. Copy `.env.example` to `.env.local`.
-2. Fill Supabase variables when ready. Without Supabase, the dashboard falls back to built-in seed data.
-3. Install dependencies with `npm install`.
-4. Run `npm run dev`.
+Implemented or registered sources include:
 
-## Data Mode
+- FRED
+- BLS Public Data API
+- BEA API
+- Federal Reserve RSS
+- U.S. Treasury Fiscal Data
+- SEC EDGAR
+- GDELT
+- GDACS Disaster Alerts
+- World Bank Indicators
+- Stooq Market Data
+- U.S. Energy Information Administration
+- CFTC Commitments of Traders
+- Alpha Vantage
+- Twelve Data
+- Brave Search API
+- ReliefWeb candidate source
 
-- `seed`: UI shows demo data. `/api/cron/collect` can still call live APIs, but collected rows are not persisted or shown in the dashboard.
-- `supabase`: UI reads persisted events, indicators, and graph records from Supabase.
-- The dashboard only switches to `supabase` display mode after at least one real event or indicator has been persisted. This avoids mixing seed events with live rows.
+Some sources require API keys. When a key is missing, collectors skip that source instead of generating fake data.
 
-Current collectors:
+## Environment Variables
 
-- Implemented without key: Stooq Market Data, BLS Public Data API, Federal Reserve RSS, U.S. Treasury Fiscal Data, SEC EDGAR, GDELT, World Bank.
-- Implemented but skipped without key: FRED, EIA, Brave Search.
-- Registered but not parsed yet: BEA, CFTC COT, Alpha Vantage, Twelve Data.
-- Non-blocking discovery/auxiliary sources: Stooq, GDELT, Brave Search. Their errors are returned and logged, but they do not fail the whole collection when core official sources succeeded.
+Create `.env.local` from `.env.example` and configure the variables you need.
 
-`/api/health` returns the configured mode, live data readiness, row counts, source status counts, and the latest cron run. `/api/cron/collect` returns both collected counts and persisted counts so Seed mode is not confused with a failed collection.
+Required for Supabase live mode:
 
-To switch from Seed to real data:
+```bash
+NEXT_PUBLIC_SUPABASE_URL=
+SUPABASE_SERVICE_ROLE_KEY=
+```
 
-1. Run `supabase/migrations/001_init.sql` in a fresh Supabase project. If the project already used the first migration, also run `supabase/migrations/002_real_data_pipeline.sql`.
-2. Add `NEXT_PUBLIC_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` to `.env.local` or Vercel.
-3. Optional but useful: add `BLS_API_KEY`, `FRED_API_KEY`, `EIA_API_KEY`, `BRAVE_SEARCH_API_KEY`, and a real `SEC_USER_AGENT`.
-4. Trigger `/api/cron/collect` once. With `CRON_SECRET`, call `/api/cron/collect?secret=...`.
-5. Open `/api/health` and confirm `liveDataReady: true`.
+Recommended collector variables:
 
-## Deploy
+```bash
+CRON_SECRET=
+SEC_USER_AGENT=
+BLS_API_KEY=
+FRED_API_KEY=
+BEA_API_KEY=
+EIA_API_KEY=
+ALPHA_VANTAGE_API_KEY=
+TWELVE_DATA_API_KEY=
+BRAVE_SEARCH_API_KEY=
+RELIEFWEB_APP_NAME=
+```
 
-1. Create a Supabase project and run `supabase/migrations/001_init.sql`.
-2. Seed optional demo data from `supabase/seeds/seed.sql`.
-3. Deploy to Vercel.
-4. Set all environment variables in Vercel.
-5. Add `fingraph.yourdomain.com` in Vercel project domains.
-6. In Cloudflare DNS, create the CNAME record Vercel provides.
+Public browser-side Supabase keys should only be used where intended. Keep service-role and secret keys in server-only environments such as Vercel environment variables.
 
-## Export API
+## Local Development
+
+```bash
+npm install
+npm run dev
+```
+
+Useful checks:
+
+```bash
+npm run typecheck
+npm run validate:events
+```
+
+## Supabase Setup
+
+Run the migrations in a Supabase SQL editor:
+
+```txt
+supabase/migrations/001_init.sql
+supabase/migrations/002_real_data_pipeline.sql
+```
+
+Optional demo seed:
+
+```txt
+supabase/seeds/seed.sql
+```
+
+To confirm data mode:
+
+```txt
+/api/health
+```
+
+The dashboard uses demo seed data until at least one real event or indicator has been collected and persisted.
+
+## Data Collection
+
+Manual trigger:
+
+```bash
+curl -H "Authorization: Bearer YOUR_CRON_SECRET" \
+  https://your-domain.com/api/cron/collect
+```
+
+Vercel Cron is configured through `vercel.json`. The production goal is to collect once per day around U.S. midday / New York market context.
+
+## Skill Pack Export
+
+Export endpoints:
 
 ```txt
 /api/export/skill-pack?days=14&format=zip&prompt=zh
 /api/export/skill-pack?days=14&format=txt&prompt=en
 ```
 
+Options:
+
 - `format=zip | txt`
 - `prompt=zh | en`
-- The language option only changes the final user prompt, which controls the report language requested from the downstream AI model.
+
+The exported content includes:
+
+- `SKILL.md`
+- nine-layer knowledge base
+- relation topology
+- recent events with original URLs
+- indicators CSV
+- source registry CSV
+- relation map JSON
+- final user prompt
+
+The final prompt asks the downstream AI to produce a complete U.S. equity macro report, explain each layer in detail, cite original source links, and provide beginner follow-up questions from multiple angles.
+
+## Remotion Intro Video
+
+The Remotion subproject lives in `remotion/`.
+
+```bash
+npm --prefix remotion install
+npm run video:studio
+npm run video:still:opening
+npm run video:render:opening
+```
+
+The opening animation is visual-only. It does not bake subtitles into the exported video because subtitles are intended to be added separately in CapCut / Jianying.
+
+Rendered video output is ignored by Git:
+
+```txt
+remotion/out/
+```
+
+## Deployment
+
+1. Create a Supabase project.
+2. Run migrations.
+3. Deploy the repository to Vercel.
+4. Add environment variables in Vercel.
+5. Configure the Vercel domain.
+6. Point the Cloudflare DNS record to Vercel.
+7. Trigger `/api/cron/collect` once.
+8. Open `/api/health` and confirm `liveDataReady: true`.
+
+## Repository
+
+Source code: [github.com/gintmr/FinGraph](https://github.com/gintmr/FinGraph)
+
+## Disclaimer
+
+FinGraph is for education, research, and decision support. It is not personalized investment advice. Always verify original sources before relying on any conclusion.

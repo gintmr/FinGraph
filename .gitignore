@@ -11,3 +11,5 @@ coverage
 .fingraph-live-cache.json
 env.local
 .history/
+remotion/out/
+remotion/

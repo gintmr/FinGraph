@@ -21,7 +21,7 @@ export function ExportPanel({ eventCount, indicatorCount }: { eventCount: number
           <Badge variant="amber">{indicatorCount} 个指标</Badge>
         </div>
         <p className="mt-5 text-sm leading-6 text-muted">
-          可导出 ZIP 包或单个 TXT。TXT 会把所有上下文合并成一个文件，也可以直接复制到剪切板，末尾附带可直接交给 AI 的 user prompt。
+          可导出 ZIP 包或单个 TXT。TXT 会把知识框架、证据链接、层级说明和初学者追问案例合并成一个文件，也可以直接复制到剪切板交给 AI。
         </p>
         <div className="mt-5">
           <ExportControls compact />
