@@ -36,13 +36,6 @@ export const embeddedPageSources: ExternalPlatform[] = [
     note: "中文 7x24 财经快讯、市场异动、宏观和政策新闻入口。"
   },
   {
-    id: "gelonghui_live",
-    name: "格隆汇快讯",
-    url: "http://www.gelonghui.com/live/",
-    category: "news",
-    note: "港美股、中概、全球市场和产业新闻快讯入口。"
-  },
-  {
     id: "investing_calendar",
     name: "Investing.com 日历",
     url: "https://www.investing.com/economic-calendar/",
