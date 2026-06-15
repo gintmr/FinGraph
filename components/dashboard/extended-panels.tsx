@@ -772,7 +772,7 @@ export function ExternalInfoHubPanel() {
 
   return (
     <Card>
-      <CardHeader title="外部信息终端" subtitle="嵌入免费、无需注册的整理型信息源；无法嵌入的网站保留为可点击入口。" />
+      <CardHeader title="外部信息终端" subtitle="把免费、无需注册的整理型信息源集中到一个可扫视面板里。" />
       <CardBody>
         <div className="overflow-hidden rounded-lg border border-line bg-panel2/70">
           <div className="flex flex-wrap items-center gap-2 border-b border-line p-2">
@@ -804,18 +804,9 @@ export function ExternalInfoHubPanel() {
             {activeWidget.note}
           </div>
         </div>
-        <div className="mt-4 grid gap-2 sm:grid-cols-2">
-          {externalLinks.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              target="_blank"
-              rel="noreferrer"
-              className="rounded-lg border border-line bg-panel2/70 p-3 transition hover:border-blue/40 hover:bg-blue/10"
-            >
-              <div className="font-semibold text-text">{item.label}</div>
-              <div className="mt-1 text-xs leading-5 text-muted">{item.note}</div>
-            </a>
+        <div className="mt-4 grid gap-3 xl:grid-cols-2">
+          {externalPageCards.map((item) => (
+            <ExternalPageCard key={item.href} item={item} />
           ))}
         </div>
       </CardBody>
@@ -936,12 +927,70 @@ const externalWidgets: ExternalWidget[] = [
   }
 ];
 
-const externalLinks = [
-  { label: "Yahoo Finance", href: "https://finance.yahoo.com/markets/", note: "无法稳定 iframe 嵌入，保留为市场总览入口。" },
-  { label: "Investing.com 日历", href: "https://www.investing.com/economic-calendar/", note: "宏观日历和预期值入口，部分页面会限制 iframe。" },
-  { label: "雪球热股", href: "https://xueqiu.com/", note: "中文社区和个股讨论入口，通常不允许第三方 iframe。" },
-  { label: "金十数据", href: "https://www.jin10.com/", note: "中文宏观快讯入口，若后续开放稳定组件再升级为嵌入。" }
+type ExternalPageCardItem = {
+  label: string;
+  href: string;
+  src: string;
+  note: string;
+};
+
+const externalPageCards: ExternalPageCardItem[] = [
+  {
+    label: "金十数据",
+    href: "https://www.jin10.com/",
+    src: "https://www.jin10.com/",
+    note: "中文宏观快讯、央行动态和市场新闻入口。"
+  },
+  {
+    label: "雪球热股",
+    href: "https://xueqiu.com/",
+    src: "https://xueqiu.com/",
+    note: "中文社区、热门股票讨论和个股情绪入口。"
+  },
+  {
+    label: "Yahoo Finance",
+    href: "https://finance.yahoo.com/markets/",
+    src: "https://finance.yahoo.com/markets/",
+    note: "美股市场总览、指数、板块和新闻聚合入口。"
+  },
+  {
+    label: "Investing.com 日历",
+    href: "https://www.investing.com/economic-calendar/",
+    src: "https://www.investing.com/economic-calendar/",
+    note: "宏观经济日历、预期值和公布值入口。"
+  }
 ];
+
+function ExternalPageCard({ item }: { item: ExternalPageCardItem }) {
+  return (
+    <div className="overflow-hidden rounded-lg border border-line bg-panel2/70">
+      <div className="flex items-start justify-between gap-3 border-b border-line p-3">
+        <div>
+          <div className="font-semibold text-text">{item.label}</div>
+          <div className="mt-1 text-xs leading-5 text-muted">{item.note}</div>
+        </div>
+        <a
+          href={item.href}
+          target="_blank"
+          rel="noreferrer"
+          className="shrink-0 rounded-md border border-blue/30 bg-blue/10 px-2.5 py-1.5 text-xs font-semibold text-blue transition hover:bg-blue/15"
+        >
+          打开源页面
+        </a>
+      </div>
+      <div className="h-[420px] bg-panel">
+        <iframe
+          title={item.label}
+          src={item.src}
+          className="h-full w-full border-0"
+          loading="lazy"
+          referrerPolicy="origin"
+          sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms"
+        />
+      </div>
+    </div>
+  );
+}
 
 function TradingViewScriptWidget({ widget, theme }: { widget: ExternalWidget; theme: "dark" | "light" }) {
   const containerRef = useRef<HTMLDivElement | null>(null);
