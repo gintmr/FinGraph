@@ -19,6 +19,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { SourceLink } from "@/components/ui/source-link";
+import { embeddedPageSources } from "@/lib/config/external-platforms";
 import { layerById } from "@/lib/config/layers";
 import type { FinGraphEvent, FinLayerId, MarketIndicator } from "@/lib/types";
 
@@ -776,8 +777,8 @@ export function ExternalInfoHubPanel() {
           {tradingViewWidgetCards.map((widget) => (
             <TradingViewWidgetCard key={widget.id} widget={widget} theme={theme} />
           ))}
-          {externalPageCards.map((item) => (
-            <ExternalPageCard key={item.href} item={item} />
+          {embeddedPageSources.map((item) => (
+            <ExternalPageCard key={item.id} item={item} />
           ))}
         </div>
       </CardBody>
@@ -898,28 +899,6 @@ const tradingViewWidgetCards: ExternalWidget[] = [
   }
 ];
 
-type ExternalPageCardItem = {
-  label: string;
-  href: string;
-  src: string;
-  note: string;
-};
-
-const externalPageCards: ExternalPageCardItem[] = [
-  {
-    label: "金十数据",
-    href: "https://www.jin10.com/",
-    src: "https://www.jin10.com/",
-    note: "中文宏观快讯、央行动态和市场新闻入口。"
-  },
-  {
-    label: "Investing.com 日历",
-    href: "https://www.investing.com/economic-calendar/",
-    src: "https://www.investing.com/economic-calendar/",
-    note: "宏观经济日历、预期值和公布值入口。"
-  }
-];
-
 function TradingViewWidgetCard({ widget, theme }: { widget: ExternalWidget; theme: "dark" | "light" }) {
   return (
     <div className="overflow-hidden rounded-lg border border-line bg-panel2/70">
@@ -942,16 +921,16 @@ function TradingViewWidgetCard({ widget, theme }: { widget: ExternalWidget; them
   );
 }
 
-function ExternalPageCard({ item }: { item: ExternalPageCardItem }) {
+function ExternalPageCard({ item }: { item: (typeof embeddedPageSources)[number] }) {
   return (
     <div className="overflow-hidden rounded-lg border border-line bg-panel2/70">
       <div className="flex items-start justify-between gap-3 border-b border-line p-3">
         <div>
-          <div className="font-semibold text-text">{item.label}</div>
+          <div className="font-semibold text-text">{item.name}</div>
           <div className="mt-1 text-xs leading-5 text-muted">{item.note}</div>
         </div>
         <a
-          href={item.href}
+          href={item.url}
           target="_blank"
           rel="noreferrer"
           className="shrink-0 rounded-md border border-blue/30 bg-blue/10 px-2.5 py-1.5 text-xs font-semibold text-blue transition hover:bg-blue/15"
@@ -961,8 +940,8 @@ function ExternalPageCard({ item }: { item: ExternalPageCardItem }) {
       </div>
       <div className="h-[420px] bg-panel">
         <iframe
-          title={item.label}
-          src={item.src}
+          title={item.name}
+          src={item.url}
           className="h-full w-full border-0"
           loading="lazy"
           referrerPolicy="origin"

@@ -1,5 +1,6 @@
 import { DashboardWorkspace } from "@/components/dashboard/dashboard-workspace";
 import { DataStatusBanner } from "@/components/dashboard/data-status-banner";
+import { SourceDirectory } from "@/components/dashboard/source-directory";
 import { TimeStatusBanner } from "@/components/dashboard/time-status-banner";
 import type { DashboardPayload } from "@/lib/types";
 
@@ -27,6 +28,8 @@ export function Dashboard({ payload }: { payload: DashboardPayload }) {
       <DataStatusBanner payload={payload} />
 
       <DashboardWorkspace payload={payload} />
+
+      <SourceDirectory sources={payload.sources} />
     </div>
   );
 }
