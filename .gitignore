@@ -13,3 +13,5 @@ env.local
 .history/
 remotion/out/
 remotion/
+Videos_Posts/
+**.srt
