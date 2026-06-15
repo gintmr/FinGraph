@@ -9,9 +9,11 @@ import {
   AiThemeMonitorPanel,
   AssetHeatmapPanel,
   CftcPositioningPanel,
+  ChartLinksPanel,
   EarningsCalendarPanel,
   EconomicCalendarPanel,
   FedWatchPanel,
+  FiscalSocialPanel,
   GlobalHotspotsPanel,
   InflationComponentsPanel,
   RiskGaugePanel,
@@ -57,7 +59,7 @@ type DropTarget = {
   top: number;
 };
 
-const storageKey = "fingraph-dashboard-panels-v3";
+const storageKey = "fingraph-dashboard-panels-v4";
 const dashboardColumns: DashboardColumnId[] = ["left", "center", "right"];
 const dropPreviewHeight = 68;
 const dropSwitchDeadZone = 18;
@@ -69,9 +71,9 @@ const columnLabels: Record<DashboardColumnId, string> = {
 };
 
 const defaultColumns: ColumnPanels = {
-  left: ["market_overview", "impact_matrix", "trend", "inflation_components", "fed_watch", "economic_calendar", "yield_curve"],
+  left: ["market_overview", "impact_matrix", "trend", "inflation_components", "fed_watch", "economic_calendar", "yield_curve", "fiscal_social"],
   center: ["daily_summary", "news", "financial_graph", "layer_health", "asset_heatmap", "export"],
-  right: ["cftc_positioning", "risk_gauge", "global_hotspots", "sector_radar", "ai_theme", "earnings_calendar", "risk"]
+  right: ["cftc_positioning", "risk_gauge", "global_hotspots", "chart_links", "sector_radar", "ai_theme", "earnings_calendar", "risk"]
 };
 
 const toneStyles: Record<
@@ -362,6 +364,18 @@ export function DashboardWorkspace({ payload }: { payload: DashboardPayload }) {
         title: "全球热点事件源",
         tone: "red",
         render: () => <GlobalHotspotsPanel events={payload.events} />
+      },
+      {
+        id: "fiscal_social",
+        title: "财政与社会压力",
+        tone: "amber",
+        render: () => <FiscalSocialPanel events={payload.events} indicators={payload.indicators} />
+      },
+      {
+        id: "chart_links",
+        title: "外部图表入口",
+        tone: "blue",
+        render: () => <ChartLinksPanel indicators={payload.indicators} />
       },
       {
         id: "sector_radar",

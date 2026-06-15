@@ -6,7 +6,7 @@ import { writeLocalLiveCache } from "@/lib/db/local-cache";
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-const nonBlockingSources = new Set(["stooq", "gdelt", "brave_search"]);
+const nonBlockingSources = new Set(["stooq", "bea", "gdelt", "alpha_vantage", "twelve_data", "brave_search"]);
 const vercelCronUserAgent = "vercel-cron/1.0";
 
 function isAllowedCronRequest(request: NextRequest) {

@@ -1,4 +1,6 @@
 import type { CollectorResult } from "@/lib/types";
+import { collectAlphaVantage } from "@/lib/collectors/alpha-vantage";
+import { collectBea } from "@/lib/collectors/bea";
 import { collectBls } from "@/lib/collectors/bls";
 import { collectBraveSearch } from "@/lib/collectors/brave-search";
 import { collectCftcCot } from "@/lib/collectors/cftc";
@@ -8,6 +10,7 @@ import { collectFred } from "@/lib/collectors/fred";
 import { collectGdelt } from "@/lib/collectors/gdelt";
 import { collectSecFilings } from "@/lib/collectors/sec";
 import { collectStooqMarketData } from "@/lib/collectors/stooq";
+import { collectTwelveData } from "@/lib/collectors/twelve-data";
 import { collectTreasuryFiscalData } from "@/lib/collectors/treasury";
 import { collectWorldBank } from "@/lib/collectors/world-bank";
 
@@ -16,12 +19,15 @@ const collectors = [
   collectBls,
   collectFederalReserve,
   collectTreasuryFiscalData,
+  collectBea,
   collectWorldBank,
   collectCftcCot,
   collectSecFilings,
   collectGdelt,
   collectFred,
   collectEia,
+  collectAlphaVantage,
+  collectTwelveData,
   collectBraveSearch
 ];
 

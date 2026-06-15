@@ -601,3 +601,82 @@ export function EarningsCalendarPanel({ events }: { events: FinGraphEvent[] }) {
     </Card>
   );
 }
+
+export function FiscalSocialPanel({ events, indicators }: { events: FinGraphEvent[]; indicators: MarketIndicator[] }) {
+  const rows = indicators.filter((indicator) => indicator.layer === "fiscal" || indicator.layer === "social");
+  const relatedEvents = events.filter((event) => event.related_layers.includes("fiscal") || event.related_layers.includes("social"));
+
+  return (
+    <Card>
+      <CardHeader title="财政与社会压力" subtitle="集中展示财政、消费、就业、工资和政府支出相关的官方证据。" />
+      <CardBody>
+        {rows.length ? <IndicatorList indicators={rows} limit={8} /> : null}
+        {relatedEvents.length ? (
+          <div className="mt-3">
+            <EventList events={relatedEvents} limit={3} />
+          </div>
+        ) : null}
+        {!rows.length && !relatedEvents.length ? (
+          <EmptyRealData message="暂无财政/社会层真实证据。配置并运行 BEA、BLS、Treasury、World Bank 采集后，这里会显示消费、就业、工资、GDP 与政府支出证据。" />
+        ) : null}
+        <PanelFooter source="BEA / BLS / Treasury / World Bank" updated={new Date().toISOString().slice(0, 10)} href="https://apps.bea.gov/api/signup/" />
+      </CardBody>
+    </Card>
+  );
+}
+
+export function ChartLinksPanel({ indicators }: { indicators: MarketIndicator[] }) {
+  const marketSymbols = [
+    { label: "SPY", href: "https://www.tradingview.com/chart/?symbol=AMEX:SPY", note: "美股大盘风险偏好" },
+    { label: "QQQ", href: "https://www.tradingview.com/chart/?symbol=NASDAQ:QQQ", note: "科技成长与 AI 叙事" },
+    { label: "TLT", href: "https://www.tradingview.com/chart/?symbol=NASDAQ:TLT", note: "长端利率与期限溢价" },
+    { label: "GLD", href: "https://www.tradingview.com/chart/?symbol=AMEX:GLD", note: "黄金、实际利率与避险" },
+    { label: "USO", href: "https://www.tradingview.com/chart/?symbol=AMEX:USO", note: "原油与能源风险" },
+    { label: "DXY", href: "https://www.tradingview.com/chart/?symbol=TVC:DXY", note: "美元流动性与汇率压力" },
+    { label: "US10Y", href: "https://www.tradingview.com/chart/?symbol=TVC:US10Y", note: "10Y 美债收益率" }
+  ];
+  const dataLinks = [
+    { label: "FRED", href: "https://fred.stlouisfed.org/", note: "利率、美元、信用利差、就业和宏观序列" },
+    { label: "BEA NIPA", href: "https://apps.bea.gov/iTable/?ReqID=19&step=2&isuri=1&categories=survey", note: "GDP、消费、投资、政府支出" },
+    { label: "Treasury Fiscal Data", href: "https://fiscaldata.treasury.gov/", note: "债务、赤字、拍卖和财政数据" },
+    { label: "BLS", href: "https://data.bls.gov/timeseries/home.htm", note: "CPI、PPI、就业、工资和失业率" },
+    { label: "SEC EDGAR", href: "https://www.sec.gov/edgar/search/", note: "公司披露、10-Q、10-K、8-K" }
+  ];
+  const liveChartLinks = indicators
+    .filter((indicator) => indicator.url.includes("tradingview.com"))
+    .slice(0, 4)
+    .map((indicator) => ({ label: indicator.name.replace(/^(Alpha Vantage|Twelve Data)\s+/, ""), href: indicator.url, note: indicator.note }));
+
+  return (
+    <Card>
+      <CardHeader title="外部图表入口" subtitle="把真实数据源和 TradingView 图表集中放在一个可点击面板里。" />
+      <CardBody>
+        <div className="grid gap-2 sm:grid-cols-2">
+          {[...liveChartLinks, ...marketSymbols].slice(0, 9).map((item) => (
+            <a
+              key={`${item.label}-${item.href}`}
+              href={item.href}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-lg border border-line bg-panel2/70 p-3 transition hover:border-blue/40 hover:bg-blue/10"
+            >
+              <div className="font-semibold text-text">{item.label}</div>
+              <div className="mt-1 line-clamp-2 text-xs leading-5 text-muted">{item.note}</div>
+            </a>
+          ))}
+        </div>
+        <div className="mt-4 grid gap-2">
+          {dataLinks.map((item) => (
+            <div key={item.label} className="flex items-center justify-between gap-3 rounded-lg border border-line bg-panel2/70 p-3">
+              <div className="min-w-0">
+                <div className="font-semibold text-text">{item.label}</div>
+                <div className="mt-1 truncate text-xs text-muted">{item.note}</div>
+              </div>
+              <SourceLink url={item.href} label="打开" />
+            </div>
+          ))}
+        </div>
+      </CardBody>
+    </Card>
+  );
+}

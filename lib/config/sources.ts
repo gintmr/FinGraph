@@ -40,10 +40,10 @@ export const sourceRegistry: SourceDefinition[] = [
     base_url: "https://apps.bea.gov/api/data",
     api_key_required: true,
     api_key_env: "BEA_API_KEY",
-    connector_status: "planned",
+    connector_status: "key_required",
     layers: ["fiscal", "industry", "corporate", "social"],
     cadence: "monthly",
-    collector_notes: "已登记为候选源；尚未实现 BEA parser。需要 BEA_API_KEY 后再接入 GDP/PCE/收入等序列。",
+    collector_notes: "已接入 BEA NIPA parser；未配置 BEA_API_KEY 时会跳过，不会生成伪数据。",
     notes: "GDP, PCE, income, industry accounts, trade, and investment data."
   },
   {
@@ -169,11 +169,11 @@ export const sourceRegistry: SourceDefinition[] = [
     base_url: "https://www.alphavantage.co/query",
     api_key_required: true,
     api_key_env: "ALPHA_VANTAGE_API_KEY",
-    connector_status: "planned",
-    layers: ["market", "corporate", "currency"],
+    connector_status: "key_required",
+    layers: ["market", "corporate", "currency", "industry", "geopolitical"],
     cadence: "daily",
-    collector_notes: "已登记为候选源；免费额度有限，尚未实现 parser。",
-    notes: "Market quotes, ETFs, FX, commodities, and technical indicators. Free quota is limited."
+    collector_notes: "已接入 GLOBAL_QUOTE 与 NEWS_SENTIMENT；免费额度有限，超限时会记录错误并跳过。",
+    notes: "Market quotes, ETF proxies, selected market news sentiment, FX, commodities, and technical indicators. Free quota is limited."
   },
   {
     id: "twelve_data",
@@ -184,11 +184,11 @@ export const sourceRegistry: SourceDefinition[] = [
     base_url: "https://api.twelvedata.com",
     api_key_required: true,
     api_key_env: "TWELVE_DATA_API_KEY",
-    connector_status: "planned",
+    connector_status: "key_required",
     layers: ["market", "currency", "corporate"],
     cadence: "daily",
-    collector_notes: "已登记为候选源；免费额度有限，尚未实现 parser。",
-    notes: "Market data fallback for equities, ETFs, FX, crypto, and commodities."
+    collector_notes: "已接入 quote endpoint；免费额度有限，用作 Stooq/Alpha Vantage 的市场数据补充。",
+    notes: "Market data fallback for equities, ETFs, FX, crypto, and commodities. TradingView links are used for chart inspection."
   },
   {
     id: "brave_search",
