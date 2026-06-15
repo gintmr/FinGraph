@@ -773,7 +773,9 @@ export function ExternalInfoHubPanel() {
       <CardHeader title="外部信息终端" subtitle="把免费、无需注册的整理型信息源集中到一个可扫视面板里。" />
       <CardBody>
         <div className="space-y-3">
-          <TradingViewWidgetCard widget={tradingViewEconomicCalendarWidget} theme={theme} />
+          {tradingViewWidgetCards.map((widget) => (
+            <TradingViewWidgetCard key={widget.id} widget={widget} theme={theme} />
+          ))}
           {externalPageCards.map((item) => (
             <ExternalPageCard key={item.href} item={item} />
           ))}
@@ -793,23 +795,108 @@ type ExternalWidget = {
   config: (theme: "dark" | "light") => Record<string, unknown>;
 };
 
-const tradingViewEconomicCalendarWidget: ExternalWidget = {
-  id: "tradingview_calendar",
-  label: "TradingView 经济日历",
-  src: "https://s3.tradingview.com/external-embedding/embed-widget-events.js",
-  href: "https://www.tradingview.com/economic-calendar/",
-  note: "TradingView 经济日历，适合快速查看美国宏观事件、央行日程和高影响数据。",
-  height: 500,
-  config: (theme) => ({
-    colorTheme: theme,
-    isTransparent: false,
-    width: "100%",
-    height: "100%",
-    locale: "zh_CN",
-    importanceFilter: "-1,0,1",
-    countryFilter: "us"
-  })
-};
+const tradingViewWidgetCards: ExternalWidget[] = [
+  {
+    id: "tradingview_calendar",
+    label: "TradingView 经济日历",
+    src: "https://s3.tradingview.com/external-embedding/embed-widget-events.js",
+    href: "https://www.tradingview.com/economic-calendar/",
+    note: "美国宏观事件、央行日程和高影响数据。",
+    height: 500,
+    config: (theme) => ({
+      colorTheme: theme,
+      isTransparent: false,
+      width: "100%",
+      height: "100%",
+      locale: "zh_CN",
+      importanceFilter: "-1,0,1",
+      countryFilter: "us"
+    })
+  },
+  {
+    id: "tradingview_heatmap",
+    label: "TradingView 美股热力图",
+    src: "https://s3.tradingview.com/external-embedding/embed-widget-stock-heatmap.js",
+    href: "https://www.tradingview.com/heatmap/stock/",
+    note: "按板块、市值和涨跌幅快速扫视美股内部结构。",
+    height: 520,
+    config: (theme) => ({
+      exchanges: [],
+      dataSource: "SPX500",
+      grouping: "sector",
+      blockSize: "market_cap_basic",
+      blockColor: "change",
+      locale: "zh_CN",
+      symbolUrl: "",
+      colorTheme: theme,
+      hasTopBar: false,
+      isDataSetEnabled: false,
+      isZoomEnabled: true,
+      hasSymbolTooltip: true,
+      width: "100%",
+      height: "100%"
+    })
+  },
+  {
+    id: "tradingview_overview",
+    label: "TradingView 市场概览",
+    src: "https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js",
+    href: "https://www.tradingview.com/markets/",
+    note: "集中观察美股指数、板块 ETF、长债、黄金和能源。",
+    height: 520,
+    config: (theme) => ({
+      colorTheme: theme,
+      dateRange: "12M",
+      showChart: true,
+      locale: "zh_CN",
+      largeChartUrl: "",
+      isTransparent: false,
+      showSymbolLogo: true,
+      showFloatingTooltip: false,
+      width: "100%",
+      height: "100%",
+      tabs: [
+        {
+          title: "美股指数",
+          symbols: [
+            { s: "AMEX:SPY", d: "SPY" },
+            { s: "NASDAQ:QQQ", d: "QQQ" },
+            { s: "AMEX:DIA", d: "DIA" },
+            { s: "AMEX:IWM", d: "IWM" }
+          ]
+        },
+        {
+          title: "板块与风险",
+          symbols: [
+            { s: "AMEX:XLK", d: "科技 XLK" },
+            { s: "AMEX:XLF", d: "金融 XLF" },
+            { s: "AMEX:XLE", d: "能源 XLE" },
+            { s: "AMEX:TLT", d: "长债 TLT" },
+            { s: "AMEX:GLD", d: "黄金 GLD" }
+          ]
+        }
+      ]
+    })
+  },
+  {
+    id: "tradingview_news",
+    label: "TradingView 市场新闻",
+    src: "https://s3.tradingview.com/external-embedding/embed-widget-timeline.js",
+    href: "https://www.tradingview.com/news/",
+    note: "整理型市场新闻流，用作二次交叉验证入口。",
+    height: 500,
+    config: (theme) => ({
+      feedMode: "market",
+      market: "stock",
+      isTransparent: false,
+      displayMode: "regular",
+      width: "100%",
+      height: "100%",
+      colorTheme: theme,
+      locale: "zh_CN"
+    })
+  }
+];
 
 type ExternalPageCardItem = {
   label: string;
@@ -824,12 +911,6 @@ const externalPageCards: ExternalPageCardItem[] = [
     href: "https://www.jin10.com/",
     src: "https://www.jin10.com/",
     note: "中文宏观快讯、央行动态和市场新闻入口。"
-  },
-  {
-    label: "雪球热股",
-    href: "https://xueqiu.com/",
-    src: "https://xueqiu.com/",
-    note: "中文社区、热门股票讨论和个股情绪入口。"
   },
   {
     label: "Investing.com 日历",

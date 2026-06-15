@@ -55,7 +55,7 @@ type DropTarget = {
   top: number;
 };
 
-const storageKey = "fingraph-dashboard-panels-v7";
+const storageKey = "fingraph-dashboard-panels-v8";
 const dashboardColumns: DashboardColumnId[] = ["left", "center", "right"];
 const dropPreviewHeight = 68;
 const dropSwitchDeadZone = 18;
@@ -67,9 +67,9 @@ const columnLabels: Record<DashboardColumnId, string> = {
 };
 
 const defaultColumns: ColumnPanels = {
-  left: ["daily_summary", "layer_health", "market_overview", "trend", "inflation_components", "fed_watch"],
+  left: ["daily_summary", "layer_health", "market_overview", "trend", "inflation_components", "fed_watch", "fiscal_social"],
   center: ["chart_links", "external_info_hub", "financial_graph", "impact_matrix", "export"],
-  right: ["news", "global_hotspots", "risk_gauge", "yield_curve", "cftc_positioning", "fiscal_social", "earnings_calendar"]
+  right: ["news", "global_hotspots", "risk_gauge", "yield_curve", "cftc_positioning", "earnings_calendar"]
 };
 
 const toneStyles: Record<
