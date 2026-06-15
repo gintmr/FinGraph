@@ -641,10 +641,18 @@ export function ChartLinksPanel({ indicators }: { indicators: MarketIndicator[] 
     { label: "BLS", href: "https://data.bls.gov/timeseries/home.htm", note: "CPI、PPI、就业、工资和失业率" },
     { label: "SEC EDGAR", href: "https://www.sec.gov/edgar/search/", note: "公司披露、10-Q、10-K、8-K" }
   ];
-  const liveChartLinks = indicators
-    .filter((indicator) => indicator.url.includes("tradingview.com"))
-    .slice(0, 4)
-    .map((indicator) => ({ label: indicator.name.replace(/^(Alpha Vantage|Twelve Data)\s+/, ""), href: indicator.url, note: indicator.note }));
+  const liveChartLinkMap = new Map(
+    indicators
+      .filter((indicator) => indicator.url.includes("tradingview.com"))
+      .map((indicator) => [
+        indicator.name.replace(/^(Alpha Vantage|Twelve Data)\s+/, ""),
+        { label: indicator.name.replace(/^(Alpha Vantage|Twelve Data)\s+/, ""), href: indicator.url, note: indicator.note }
+      ])
+  );
+  const liveChartLinks = ["SPY", "QQQ", "TLT", "IWM"].map((label) => {
+    const fallback = tradingViewSymbols.find((item) => item.label === label);
+    return liveChartLinkMap.get(label) ?? { label, href: fallback?.href ?? "https://www.tradingview.com/markets/stocks-usa/", note: fallback?.note ?? "美股市场图表入口" };
+  });
   const [activeSymbol, setActiveSymbol] = useState(marketSymbols[0]);
 
   return (
