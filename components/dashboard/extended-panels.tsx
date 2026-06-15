@@ -757,8 +757,6 @@ function TradingViewChart({ symbol }: { symbol: string }) {
 }
 
 export function ExternalInfoHubPanel() {
-  const widgets = externalWidgets;
-  const [activeWidget, setActiveWidget] = useState(widgets[0]);
   const [theme, setTheme] = useState<"dark" | "light">("dark");
 
   useEffect(() => {
@@ -774,37 +772,8 @@ export function ExternalInfoHubPanel() {
     <Card>
       <CardHeader title="外部信息终端" subtitle="把免费、无需注册的整理型信息源集中到一个可扫视面板里。" />
       <CardBody>
-        <div className="overflow-hidden rounded-lg border border-line bg-panel2/70">
-          <div className="flex flex-wrap items-center gap-2 border-b border-line p-2">
-            {widgets.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => setActiveWidget(item)}
-                className={`rounded-md border px-2.5 py-1.5 text-xs font-semibold transition ${
-                  activeWidget.id === item.id
-                    ? "border-blue/40 bg-blue/15 text-blue"
-                    : "border-line bg-panel text-muted hover:text-text"
-                }`}
-              >
-                {item.label}
-              </button>
-            ))}
-            <a
-              href={activeWidget.href}
-              target="_blank"
-              rel="noreferrer"
-              className="ml-auto rounded-md border border-blue/30 bg-blue/10 px-2.5 py-1.5 text-xs font-semibold text-blue transition hover:bg-blue/15"
-            >
-              打开源页面
-            </a>
-          </div>
-          <TradingViewScriptWidget key={`${activeWidget.id}-${theme}`} widget={activeWidget} theme={theme} />
-          <div className="border-t border-line px-3 py-2 text-xs leading-5 text-muted">
-            {activeWidget.note}
-          </div>
-        </div>
-        <div className="mt-4 grid gap-3 xl:grid-cols-2">
+        <div className="space-y-3">
+          <TradingViewWidgetCard widget={tradingViewEconomicCalendarWidget} theme={theme} />
           {externalPageCards.map((item) => (
             <ExternalPageCard key={item.href} item={item} />
           ))}
@@ -824,108 +793,23 @@ type ExternalWidget = {
   config: (theme: "dark" | "light") => Record<string, unknown>;
 };
 
-const externalWidgets: ExternalWidget[] = [
-  {
-    id: "calendar",
-    label: "宏观日历",
-    src: "https://s3.tradingview.com/external-embedding/embed-widget-events.js",
-    href: "https://www.tradingview.com/economic-calendar/",
-    note: "TradingView 经济日历，适合快速查看美国宏观事件、央行日程和高影响数据。",
-    height: 520,
-    config: (theme) => ({
-      colorTheme: theme,
-      isTransparent: false,
-      width: "100%",
-      height: "100%",
-      locale: "zh_CN",
-      importanceFilter: "-1,0,1",
-      countryFilter: "us"
-    })
-  },
-  {
-    id: "heatmap",
-    label: "美股热力图",
-    src: "https://s3.tradingview.com/external-embedding/embed-widget-stock-heatmap.js",
-    href: "https://www.tradingview.com/heatmap/stock/",
-    note: "TradingView 美股热力图，把板块、权重与涨跌幅压缩到一张可扫视视图里。",
-    height: 520,
-    config: (theme) => ({
-      exchanges: [],
-      dataSource: "SPX500",
-      grouping: "sector",
-      blockSize: "market_cap_basic",
-      blockColor: "change",
-      locale: "zh_CN",
-      symbolUrl: "",
-      colorTheme: theme,
-      hasTopBar: false,
-      isDataSetEnabled: false,
-      isZoomEnabled: true,
-      hasSymbolTooltip: true,
-      width: "100%",
-      height: "100%"
-    })
-  },
-  {
-    id: "news",
-    label: "市场新闻",
-    src: "https://s3.tradingview.com/external-embedding/embed-widget-timeline.js",
-    href: "https://www.tradingview.com/news/",
-    note: "TradingView 市场新闻流，用作整理型新闻入口；重要结论仍应回到原始来源交叉验证。",
-    height: 520,
-    config: (theme) => ({
-      feedMode: "market",
-      market: "stock",
-      isTransparent: false,
-      displayMode: "regular",
-      width: "100%",
-      height: "100%",
-      colorTheme: theme,
-      locale: "zh_CN"
-    })
-  },
-  {
-    id: "overview",
-    label: "市场概览",
-    src: "https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js",
-    href: "https://www.tradingview.com/markets/",
-    note: "TradingView 市场概览，集中观察指数、ETF、商品和核心权重股。",
-    height: 520,
-    config: (theme) => ({
-      colorTheme: theme,
-      dateRange: "12M",
-      showChart: true,
-      locale: "zh_CN",
-      largeChartUrl: "",
-      isTransparent: false,
-      showSymbolLogo: true,
-      showFloatingTooltip: false,
-      width: "100%",
-      height: "100%",
-      tabs: [
-        {
-          title: "美股指数",
-          symbols: [
-            { s: "AMEX:SPY", d: "SPY" },
-            { s: "NASDAQ:QQQ", d: "QQQ" },
-            { s: "AMEX:DIA", d: "DIA" },
-            { s: "AMEX:IWM", d: "IWM" }
-          ]
-        },
-        {
-          title: "板块与风险",
-          symbols: [
-            { s: "AMEX:XLK", d: "科技 XLK" },
-            { s: "AMEX:XLF", d: "金融 XLF" },
-            { s: "AMEX:XLE", d: "能源 XLE" },
-            { s: "AMEX:TLT", d: "长债 TLT" },
-            { s: "AMEX:GLD", d: "黄金 GLD" }
-          ]
-        }
-      ]
-    })
-  }
-];
+const tradingViewEconomicCalendarWidget: ExternalWidget = {
+  id: "tradingview_calendar",
+  label: "TradingView 经济日历",
+  src: "https://s3.tradingview.com/external-embedding/embed-widget-events.js",
+  href: "https://www.tradingview.com/economic-calendar/",
+  note: "TradingView 经济日历，适合快速查看美国宏观事件、央行日程和高影响数据。",
+  height: 500,
+  config: (theme) => ({
+    colorTheme: theme,
+    isTransparent: false,
+    width: "100%",
+    height: "100%",
+    locale: "zh_CN",
+    importanceFilter: "-1,0,1",
+    countryFilter: "us"
+  })
+};
 
 type ExternalPageCardItem = {
   label: string;
@@ -948,18 +832,34 @@ const externalPageCards: ExternalPageCardItem[] = [
     note: "中文社区、热门股票讨论和个股情绪入口。"
   },
   {
-    label: "Yahoo Finance",
-    href: "https://finance.yahoo.com/markets/",
-    src: "https://finance.yahoo.com/markets/",
-    note: "美股市场总览、指数、板块和新闻聚合入口。"
-  },
-  {
     label: "Investing.com 日历",
     href: "https://www.investing.com/economic-calendar/",
     src: "https://www.investing.com/economic-calendar/",
     note: "宏观经济日历、预期值和公布值入口。"
   }
 ];
+
+function TradingViewWidgetCard({ widget, theme }: { widget: ExternalWidget; theme: "dark" | "light" }) {
+  return (
+    <div className="overflow-hidden rounded-lg border border-line bg-panel2/70">
+      <div className="flex items-start justify-between gap-3 border-b border-line p-3">
+        <div>
+          <div className="font-semibold text-text">{widget.label}</div>
+          <div className="mt-1 text-xs leading-5 text-muted">{widget.note}</div>
+        </div>
+        <a
+          href={widget.href}
+          target="_blank"
+          rel="noreferrer"
+          className="shrink-0 rounded-md border border-blue/30 bg-blue/10 px-2.5 py-1.5 text-xs font-semibold text-blue transition hover:bg-blue/15"
+        >
+          打开源页面
+        </a>
+      </div>
+      <TradingViewScriptWidget key={`${widget.id}-${theme}`} widget={widget} theme={theme} />
+    </div>
+  );
+}
 
 function ExternalPageCard({ item }: { item: ExternalPageCardItem }) {
   return (

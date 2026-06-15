@@ -6,19 +6,15 @@ import { ChevronDown, ChevronUp, GripVertical, Palette, RotateCcw } from "lucide
 import { DailySummaryCard } from "@/components/dashboard/daily-summary-card";
 import { ExportPanel } from "@/components/dashboard/export-panel";
 import {
-  AiThemeMonitorPanel,
-  AssetHeatmapPanel,
   CftcPositioningPanel,
   ChartLinksPanel,
   EarningsCalendarPanel,
-  EconomicCalendarPanel,
   ExternalInfoHubPanel,
   FedWatchPanel,
   FiscalSocialPanel,
   GlobalHotspotsPanel,
   InflationComponentsPanel,
   RiskGaugePanel,
-  SectorRadarPanel,
   YieldCurvePanel
 } from "@/components/dashboard/extended-panels";
 import { FinancialGraph } from "@/components/dashboard/financial-graph";
@@ -26,7 +22,6 @@ import { ImpactMatrix } from "@/components/dashboard/impact-matrix";
 import { LayerHealthGrid } from "@/components/dashboard/layer-health-grid";
 import { MarketOverview } from "@/components/dashboard/market-overview";
 import { NewsInsightList } from "@/components/dashboard/news-insight-list";
-import { RiskPanel } from "@/components/dashboard/risk-panel";
 import { TrendPanel } from "@/components/dashboard/trend-panel";
 import type { DashboardPayload } from "@/lib/types";
 import { cn } from "@/lib/utils/cn";
@@ -60,7 +55,7 @@ type DropTarget = {
   top: number;
 };
 
-const storageKey = "fingraph-dashboard-panels-v6";
+const storageKey = "fingraph-dashboard-panels-v7";
 const dashboardColumns: DashboardColumnId[] = ["left", "center", "right"];
 const dropPreviewHeight = 68;
 const dropSwitchDeadZone = 18;
@@ -72,9 +67,9 @@ const columnLabels: Record<DashboardColumnId, string> = {
 };
 
 const defaultColumns: ColumnPanels = {
-  left: ["market_overview", "impact_matrix", "trend", "inflation_components", "fed_watch", "yield_curve", "fiscal_social"],
-  center: ["daily_summary", "news", "global_hotspots", "chart_links", "external_info_hub", "financial_graph", "layer_health", "asset_heatmap", "export"],
-  right: ["economic_calendar", "cftc_positioning", "risk_gauge", "sector_radar", "ai_theme", "earnings_calendar", "risk"]
+  left: ["daily_summary", "layer_health", "market_overview", "trend", "inflation_components", "fed_watch"],
+  center: ["chart_links", "external_info_hub", "financial_graph", "impact_matrix", "export"],
+  right: ["news", "global_hotspots", "risk_gauge", "yield_curve", "cftc_positioning", "fiscal_social", "earnings_calendar"]
 };
 
 const toneStyles: Record<
@@ -301,12 +296,6 @@ export function DashboardWorkspace({ payload }: { payload: DashboardPayload }) {
         render: () => <MarketOverview indicators={payload.indicators} />
       },
       {
-        id: "asset_heatmap",
-        title: "全球资产热力图",
-        tone: "green",
-        render: () => <AssetHeatmapPanel indicators={payload.indicators} />
-      },
-      {
         id: "cftc_positioning",
         title: "期货仓位 / COT",
         tone: "green",
@@ -355,12 +344,6 @@ export function DashboardWorkspace({ payload }: { payload: DashboardPayload }) {
         render: () => <FedWatchPanel events={payload.events} indicators={payload.indicators} />
       },
       {
-        id: "economic_calendar",
-        title: "经济日历",
-        tone: "amber",
-        render: () => <EconomicCalendarPanel events={payload.events} />
-      },
-      {
         id: "global_hotspots",
         title: "地缘热点事件源",
         tone: "red",
@@ -385,18 +368,6 @@ export function DashboardWorkspace({ payload }: { payload: DashboardPayload }) {
         render: () => <ExternalInfoHubPanel />
       },
       {
-        id: "sector_radar",
-        title: "板块轮动雷达",
-        tone: "blue",
-        render: () => <SectorRadarPanel events={payload.events} />
-      },
-      {
-        id: "ai_theme",
-        title: "AI 主题监测",
-        tone: "green",
-        render: () => <AiThemeMonitorPanel events={payload.events} />
-      },
-      {
         id: "earnings_calendar",
         title: "企业财报日历",
         tone: "amber",
@@ -407,12 +378,6 @@ export function DashboardWorkspace({ payload }: { payload: DashboardPayload }) {
         title: "利率与通胀趋势",
         tone: "blue",
         render: () => <TrendPanel indicators={payload.indicators} />
-      },
-      {
-        id: "risk",
-        title: "监控预警",
-        tone: "red",
-        render: () => <RiskPanel events={payload.events} indicators={payload.indicators} />
       },
       {
         id: "export",
@@ -569,7 +534,7 @@ export function DashboardWorkspace({ payload }: { payload: DashboardPayload }) {
         </button>
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-[0.82fr_1.36fr_0.82fr]" data-dashboard-columns>
+      <div className="grid gap-4 xl:grid-cols-[0.76fr_1.48fr_0.76fr]" data-dashboard-columns>
         {dashboardColumns.map((column) => {
           const panelIds = preferences.columns[column];
 
