@@ -15,7 +15,7 @@ export default async function GraphPage() {
       <div className="space-y-4">
         <div>
           <p className="text-sm text-muted">Relation Structure</p>
-          <h1 className="mt-1 text-3xl font-semibold text-text">九层结构与传导关系</h1>
+          <h1 className="mt-1 text-3xl font-semibold text-text">图谱结构</h1>
         </div>
 
         <div className="grid gap-4 xl:grid-cols-[1.35fr_1fr]">

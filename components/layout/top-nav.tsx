@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils/cn";
 
 const navItems = [
   { href: "/", label: "总览" },
-  { href: "/graph", label: "深度图谱" },
+  { href: "/graph", label: "图谱结构" },
   { href: "/events", label: "事件流" },
   { href: "/sources", label: "数据源" },
   { href: "/exports", label: "Skill Pack" }

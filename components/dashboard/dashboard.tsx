@@ -14,7 +14,7 @@ export function Dashboard({ payload }: { payload: DashboardPayload }) {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="text-sm text-muted">Personal Macro Intelligence System</p>
-          <h1 className="mt-1 text-2xl font-semibold text-text sm:text-3xl">总览：美股金融分析图谱</h1>
+          <h1 className="mt-1 text-2xl font-semibold text-text sm:text-3xl">美股金融分析图谱</h1>
         </div>
         <div className="rounded-lg border border-line bg-panel2 px-3 py-2 text-xs text-muted">
           数据模式：{modeLabels[payload.mode]} · {new Date(payload.generatedAt).toLocaleString("zh-CN")}
